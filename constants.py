@@ -8,6 +8,7 @@ import numpy as np
 
 pi = np.pi
 sqrt2 = np.sqrt(2)
+degree = pi/180
 
 # Physical constants
 #   Source: M. Tanabashi et al. (Particle Data Group), Phys. Rev. D 98, 030001 (2018)
