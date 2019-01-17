@@ -4,7 +4,7 @@ from __future__ import absolute_import
 
 from nose.tools import assert_equals, assert_raises
 
-from .. import constants as c
+from ..data import constants as c
 
 def test_m_Q():
     assert_equals(c.m_Q('U', 1), c.m_u)
