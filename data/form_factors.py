@@ -4,7 +4,7 @@ from __future__ import division
 from __future__ import absolute_import
 
 from .constants import *
-from .particle import *
+from .particles import *
 
 from numpy import sqrt
 from math import sin, cos

@@ -4,7 +4,7 @@ from __future__ import absolute_import
 
 from nose.tools import assert_equals, assert_raises
 
-from ..data.particle import *
+from ..data.particles import *
 
 def test_get_pdg_id():
     # Test meson PDG IDs
