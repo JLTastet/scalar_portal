@@ -69,3 +69,10 @@ def test_get_parity():
     assert_equals(get_parity('K*_2(1430)0'  ), +1)
     assert_equals(get_parity('B'            ), -1)
 
+def test_quark_quantum_numbers():
+    assert_equals(get_abs_strangeness('K*'), 1)
+    assert_equals(get_abs_charm('K*')      , 0)
+    assert_equals(get_abs_beauty('K*')     , 0)
+    assert_equals(get_abs_strangeness('B'), 0)
+    assert_equals(get_abs_charm('B')      , 0)
+    assert_equals(get_abs_beauty('B')     , 1)

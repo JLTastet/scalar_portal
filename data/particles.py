@@ -101,6 +101,18 @@ def _get_meson_parity(meson_name):
     record = _get_meson_by_name(meson_name)
     return record.Parity
 
+def _get_abs_meson_strangeness(meson_name):
+    record = _get_meson_by_name(meson_name)
+    return abs(record.S)
+
+def _get_abs_meson_charm(meson_name):
+    record = _get_meson_by_name(meson_name)
+    return abs(record.C)
+
+def _get_abs_meson_beauty(meson_name):
+    record = _get_meson_by_name(meson_name)
+    return abs(record.B)
+
 def get_pdg_id(particle):
     # NOTE: Only mesons are handled so far.
     return _get_meson_pdg_id(particle)
@@ -123,3 +135,15 @@ def get_spin_code(particle):
 def get_parity(particle):
     # NOTE: Only mesons are handled so far.
     return _get_meson_parity(particle)
+
+def get_abs_strangeness(particle):
+    # NOTE: Only mesons are handled so far.
+    return _get_abs_meson_strangeness(particle)
+
+def get_abs_charm(particle):
+    # NOTE: Only mesons are handled so far.
+    return _get_abs_meson_charm(particle)
+
+def get_abs_beauty(particle):
+    # NOTE: Only mesons are handled so far.
+    return _get_abs_meson_beauty(particle)
