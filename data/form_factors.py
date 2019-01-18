@@ -52,7 +52,10 @@ def _xi(xi0):
 def _vector_A0_Kstar_form_factor(xi0_perp, xi0_par, mV):
     xi_perp = _xi(xi0_perp)
     xi_par  = _xi(xi0_par )
-    return lambda q2, EV: (1 - mV**2/(mB*EV)) * xi_par(q2) + (mV/mB) * xi_perp(q2)
+    def A0(q2):
+        EV = mB/2 * ( 1 - q2/mB**2 + (mV/mB)**2 )
+        return (1 - mV**2/(mB*EV)) * xi_par(q2) + (mV/mB) * xi_perp(q2)
+    return A0
 
 _form_factors[('B', 'K*')] = \
      _vector_A0_Kstar892_form_factor(1.364, -0.99, sqrt(36.8))
@@ -95,17 +98,3 @@ def _tensor_A0_form_factor(F0, aT, bT):
     return lambda q2: F0 / ( (1-q2/mB**2) * (1-aT*(q2/mB**2)+bT*(q2/mB**2)**2) )
 
 _form_factors[('B', 'K*_2(1430)')] = _tensor_A0_form_factor(0.23, 1.23, 0.76)
-
-# Utility functions
-# -----------------
-
-def two_body_energy(m0, m1, m2):
-    """
-    Computes the energy of each child particle in a 2-body decay, in the CM frame.
-    """
-    p_cm = sqrt((m0+m1+m2) * (m0-m1+m2) * (m0+m1-m2) * (m0-m1-m2)) / (2*m0)
-    E1_cm = sqrt(m1**2 + p_cm**2)
-    E2_cm = sqrt(m2**2 + p_cm**2)
-    return E1_cm, E2_cm
-
-

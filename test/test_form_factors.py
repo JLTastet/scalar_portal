@@ -6,13 +6,6 @@ from nose.tools import assert_equals, assert_raises
 
 from ..data.form_factors import *
 
-def _compute_EV(parent_meson, child_meson):
-    m0 = get_mass(parent_meson)
-    m1 = 0
-    m2 = get_mass(child_meson)
-    ES, EV = two_body_energy(m0, m1, m2)
-    return EV
-
 def test_form_factors_at_zero():
     # Scalar form factors
     f = get_form_factor('B', 'K')
@@ -30,11 +23,9 @@ def test_form_factors_at_zero():
     f = get_form_factor('B', 'K*')
     assert(abs(f(0) - 0.374) < 0.033)
     f = get_form_factor('B', 'K*(1410)')
-    EV = _compute_EV('B', 'K*(1410)')
-    assert(abs(f(0, EV) - 0.300) < 0.036)
+    assert(abs(f(0) - 0.300) < 0.036)
     f = get_form_factor('B', 'K*(1680)')
-    EV = _compute_EV('B', 'K*(1680)')
-    assert(abs(f(0, EV) - 0.22) < 0.04)
+    assert(abs(f(0) - 0.22) < 0.04)
     # Pseudo-vector form factors
     f = get_form_factor('B', 'K_1(1270)')
     assert(abs(f(0) - (-0.52)) < 0.13)
