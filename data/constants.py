@@ -137,12 +137,12 @@ def xi(UD, i, j):
     Absolute value of the constant $\xi_Q^{ij}$ from the effective flavor-changing
     Lagrangian.
     """
-    if not j > i:
+    if not i > j:
         raise(ValueError('Initial generation i={} must be higher than j={}.'.format(i, j)))
     prefactor = 3*sqrt2*GF / (16*pi**2)
     if UD == 'D':
-        return prefactor * sum(ckm(k,i) * m_Q('U', k)**2 * ckm(k,j) for k in range(1, 4))
+        return prefactor * sum(ckm(k,j) * m_Q('U', k)**2 * ckm(k,i) for k in range(1, 4))
     elif UD == 'U':
-        return prefactor * sum(ckm(i,k) * m_Q('D', k)**2 * ckm(j,k) for k in range(1, 4))
+        return prefactor * sum(ckm(j,k) * m_Q('D', k)**2 * ckm(i,k) for k in range(1, 4))
     else:
         raise(ValueError('Wrong quark type {} (must be U or D).'.format(UD)))

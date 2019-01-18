@@ -36,11 +36,11 @@ def test_ckm():
 
 def test_xi():
     epsilon=0.11
-    assert(abs(c.xi('D', 1, 2) - c.xi_d_ds) / c.xi_d_ds < epsilon)
-    assert(abs(c.xi('D', 1, 3) - c.xi_d_db) / c.xi_d_db < epsilon)
-    assert(abs(c.xi('D', 2, 3) - c.xi_d_sb) / c.xi_d_sb < epsilon)
-    assert(abs(c.xi('U', 1, 2) - c.xi_u_uc) / c.xi_u_uc < epsilon)
-    assert_raises(ValueError, lambda: c.xi('D', 2, 1))
-    assert_raises(ValueError, lambda: c.xi('Z', 1, 2))
-    assert_raises(ValueError, lambda: c.xi('D', 0, 2))
-    assert_raises(ValueError, lambda: c.xi('D', 1, 4))
+    assert(abs(c.xi('D', 2, 1) - c.xi_d_ds) / c.xi_d_ds < epsilon)
+    assert(abs(c.xi('D', 3, 1) - c.xi_d_db) / c.xi_d_db < epsilon)
+    assert(abs(c.xi('D', 3, 2) - c.xi_d_sb) / c.xi_d_sb < epsilon)
+    assert(abs(c.xi('U', 2, 1) - c.xi_u_uc) / c.xi_u_uc < epsilon)
+    assert_raises(ValueError, lambda: c.xi('D', 1, 2))
+    assert_raises(ValueError, lambda: c.xi('Z', 2, 1))
+    assert_raises(ValueError, lambda: c.xi('D', 2, 0))
+    assert_raises(ValueError, lambda: c.xi('D', 4, 1))
