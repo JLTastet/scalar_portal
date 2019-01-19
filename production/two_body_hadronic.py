@@ -56,6 +56,9 @@ def _get_quark_transition(Y, Y1):
 def _get_xi(Y, Y1):
     return xi(*_get_quark_transition(Y, Y1))
 
+def _available_mass(Y, Y1):
+    return get_mass(Y) - get_mass(Y1)
+
 def normalized_amplitude(Y, Y1, mS):
     """
     Computes the transition amplitude for the process Y_q -> S Y'_q', divided by
@@ -70,5 +73,15 @@ def normalized_amplitude(Y, Y1, mS):
     F = get_form_factor(Y, Y1)
     A = xi_Q * (chi / v) * F(mS**2)
     # Set the amplitude to zero if the channel is kinematically closed.
-    available_mass = get_mass(Y) - get_mass(Y1)
-    return np.where(mS < available_mass, A, 0.)
+    return np.where(mS < _available_mass(Y, Y1), A, 0.)
+
+def normalized_decay_width(Y, Y1, mS):
+    """
+    Computes the decay width for the process Y_q -> S Y'_q', divided by the
+    mixing angle θ.
+    """
+    A = normalized_amplitude(Y, Y1, mS)
+    mY  = get_mass(Y )
+    mY1 = get_mass(Y1)
+    pS = np.where(mS < _available_mass(Y, Y1), _scalar_momentum(mY, mY1, mS), 0.)
+    return ( A**2 * pS ) / ( 8*pi * mY**2 )
