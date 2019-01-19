@@ -10,7 +10,8 @@ from ..data.form_factors import *
 import numpy as np
 
 def _scalar_momentum(mY, mY1, mS):
-    return np.sqrt( (mY**2 - (mS+mY1)**2) * (mY**2 - (mS-mY1)**2) ) / (2*mY)
+    with np.errstate(invalid='ignore'):
+        return np.sqrt( (mY**2 - (mS+mY1)**2) * (mY**2 - (mS-mY1)**2) ) / (2*mY)
 
 def _chi0(mY, mY1, mS):
     return (mY**2 - mY1**2) / 2
@@ -67,4 +68,7 @@ def normalized_amplitude(Y, Y1, mS):
     xi_Q = _get_xi(Y, Y1)
     chi = _chi(Y, Y1, mS)
     F = get_form_factor(Y, Y1)
-    return xi_Q * (chi / v) * F(mS**2)
+    A = xi_Q * (chi / v) * F(mS**2)
+    # Set the amplitude to zero if the channel is kinematically closed.
+    available_mass = get_mass(Y) - get_mass(Y1)
+    return np.where(mS < available_mass, A, 0.)
