@@ -24,6 +24,7 @@ def test_two_body_hadronic_amplitude():
     assert(all(np.isfinite(A)))
     assert(all(A[mS >= get_mass('B') - get_mass('K*_2(1430)')] == 0))
     assert_raises(ValueError, lambda: normalized_amplitude('K', 'B', mS))
+    assert_raises(ValueError, lambda: normalized_amplitude('K', 'e', mS))
 
 def test_two_body_hadronic_width():
     mS = np.array([0, 0.1, 0.5, 1.0, 2.0, 4.0, 10.0])
@@ -42,3 +43,4 @@ def test_two_body_hadronic_width():
     assert(all(np.isfinite(w)))
     assert(all(w[mS >= get_mass('B') - get_mass('K*_2(1430)')] == 0))
     assert_raises(ValueError, lambda: normalized_decay_width('K', 'B', mS))
+    assert_raises(ValueError, lambda: normalized_decay_width('K', 'e', mS))

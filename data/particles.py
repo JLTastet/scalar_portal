@@ -5,8 +5,15 @@ from __future__ import division
 import os
 import pandas
 
+import constants as cst
+
 _srcdir = os.path.dirname(__file__)
+
+# Meson properties
+# ----------------
+
 _meson_df = pandas.read_table(os.path.join(_srcdir, 'meson_properties.dat'))
+_meson_names = list(_meson_df.Name)
 
 # Special cases for K_S0 and K_L0
 _k0_codes = {'K_S': 310, 'K_L': 130}
@@ -113,6 +120,51 @@ def _get_abs_meson_beauty(meson_name):
     record = _get_meson_by_name(meson_name)
     return abs(record.B)
 
+# Lepton properties
+# -----------------
+
+_lepton_masses = {
+    'e'  : cst.m_e  ,
+    'mu' : cst.m_mu ,
+    'tau': cst.m_tau,
+}
+
+def _get_lepton_mass(lepton_name):
+    if len(lepton_name) >= 1 and lepton_name[-1] in ['-', '+']:
+        basename = lepton_name[:-1]
+    else:
+        basename = lepton_name
+    try:
+        return _lepton_masses[basename]
+    except KeyError:
+        raise(ValueError('Unknown lepton {}.'.format(lepton_name)))
+
+def _get_lepton_spin_code(lepton_name):
+    return 2
+
+# Public API
+# ----------
+
+def is_meson(particle):
+    if particle in _meson_names:
+        return True
+    else:
+        try:
+            basename, charge = _split_meson_charge(particle)
+            if basename in _meson_names:
+                return True
+        except:
+            return False
+    return False
+
+def is_lepton(particle):
+    if particle in _lepton_masses:
+        return True
+    elif len(particle) >= 1 and particle[:-1] in _lepton_masses:
+        return True
+    else:
+        return False
+
 def get_pdg_id(particle):
     # NOTE: Only mesons are handled so far.
     return _get_meson_pdg_id(particle)
@@ -122,15 +174,23 @@ def get_name(pdg_id):
     return _get_meson_by_id(pdg_id)
 
 def get_mass(particle):
-    # NOTE: Only mesons are handled so far.
-    return _get_meson_mass(particle)
+    if is_lepton(particle):
+        return _get_lepton_mass(particle)
+    elif is_meson(particle):
+        return _get_meson_mass(particle)
+    else:
+        raise(ValueError('Mass of {} is unknown.'.format(particle)))
 
 def get_spin_code(particle):
     """
     Returns a positive integer 2S+1 representing the spin S of the particle.
     """
-    # NOTE: Only mesons are handled so far.
-    return _get_meson_spin_code(particle)
+    if is_lepton(particle):
+        return _get_lepton_spin_code(particle)
+    elif is_meson(particle):
+        return _get_meson_spin_code(particle)
+    else:
+        raise(ValueError('Spin of {} is unknown.'.format(particle)))
 
 def get_parity(particle):
     # NOTE: Only mesons are handled so far.

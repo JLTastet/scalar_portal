@@ -5,6 +5,7 @@ from __future__ import absolute_import
 from nose.tools import assert_equals, assert_raises
 
 from ..data.particles import *
+from ..data.constants import *
 
 def test_get_pdg_id():
     # Test meson PDG IDs
@@ -53,6 +54,11 @@ def test_get_mass():
     assert(abs(get_mass('K*') - 0.892) < 0.005)
     assert(abs(get_mass('K*_2(1430)') - 1.426) < 0.002)
     assert(abs(get_mass('K_1(1400)0') - 1.403) < 0.010)
+    assert_equals(get_mass('e-' ), m_e  )
+    assert_equals(get_mass('mu+'), m_mu )
+    assert_equals(get_mass('tau'), m_tau)
+    assert_raises(ValueError, lambda: get_mass('~Gravitino'))
+    assert_raises(ValueError, lambda: get_mass('mu0'))
 
 def test_get_spin_code():
     assert_equals(get_spin_code('pi+'       ), 1)
@@ -60,6 +66,9 @@ def test_get_spin_code():
     assert_equals(get_spin_code('K*(1410)-' ), 3)
     assert_equals(get_spin_code('K*_2(1430)'), 5)
     assert_equals(get_spin_code('Bbar0'     ), 1)
+    assert_equals(get_spin_code('e-'        ), 2)
+    assert_equals(get_spin_code('tau'       ), 2)
+    assert_raises(ValueError, lambda: get_spin_code('~Gravitino'))
 
 def test_get_parity():
     assert_equals(get_parity('K'            ), -1)
@@ -76,3 +85,23 @@ def test_quark_quantum_numbers():
     assert_equals(get_abs_strangeness('B'), 0)
     assert_equals(get_abs_charm('B')      , 0)
     assert_equals(get_abs_beauty('B')     , 1)
+
+def test_is_meson():
+    assert_equals(is_meson('pi'        ), True)
+    assert_equals(is_meson('K*_0(1430)'), True)
+    assert_equals(is_meson('Bbar0'     ), True)
+    assert_equals(is_meson('K*-'       ), True)
+    assert_equals(is_meson('K_1(1400)+'), True)
+    assert_equals(is_meson('e+')  , False)
+    assert_equals(is_meson('mu')  , False)
+    assert_equals(is_meson('tau-'), False)
+
+def test_is_lepton():
+    assert_equals(is_lepton('pi'        ), False)
+    assert_equals(is_lepton('K*_0(1430)'), False)
+    assert_equals(is_lepton('Bbar0'     ), False)
+    assert_equals(is_lepton('K*-'       ), False)
+    assert_equals(is_lepton('K_1(1400)+'), False)
+    assert_equals(is_lepton('e+')  , True)
+    assert_equals(is_lepton('mu')  , True)
+    assert_equals(is_lepton('tau-'), True)

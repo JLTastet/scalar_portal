@@ -22,6 +22,14 @@ vev = v / np.sqrt(2) # GeV
 # Fermi constant
 GF = 1.1663787e-5 # GeV⁻²
 
+# Lepton masses (in GeV)
+#   Source: M. Tanabashi et al. (Particle Data Group), Phys. Rev. D 98, 030001 (2018)
+#   DOI: 10.1103/PhysRevD.98.030001
+#   Extracted from Lepton Summary Table
+m_e   =    0.51099894e-3
+m_mu  =  105.65837e-3
+m_tau = 1776.9e-3
+
 # Quark masses (in GeV)
 #   Source: M. Tanabashi et al. (Particle Data Group), Phys. Rev. D 98, 030001 (2018)
 #   DOI: 10.1103/PhysRevD.98.030001
