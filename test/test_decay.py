@@ -6,9 +6,11 @@ from nose.tools import assert_equals, assert_raises
 import numpy as np
 
 from ..data.particles import *
+from ..data import qcd_rg as rg
 from ..decay import leptonic as lp
 from ..decay import two_pions as tp
 from ..decay import two_gluons as gg
+from ..decay import two_quarks as qq
 
 def test_leptonic_width():
     mS = np.array([0.01, 0.1, 0.5, 1.0, 2.0, 4.0, 10.0])
@@ -40,3 +42,15 @@ def test_two_gluon_width():
     w = gg.normalized_decay_width(mS)
     assert(all(w[mS >= 2.0] > 0))
     assert(all(np.isnan(w[mS < 2.0])))
+
+def test_two_quark_width():
+    mS = np.array([0.01, 0.1, 0.5, 1.0, 2.0, 2.2, 4.0, 10.0])
+    w = qq.normalized_decay_width('s', mS)
+    assert(all(w[mS >= 2.0] > 0))
+    assert(all(np.isnan(w[mS < 2.0])))
+    w = qq.normalized_decay_width('c', mS)
+    print w
+    with np.errstate(invalid='ignore'):
+        assert(all(w[mS >= 2*rg.get_quark_mass('c', mS)] > 0))
+    assert(all(np.isnan(w[mS < 2.0])))
+    assert_raises(ValueError, lambda: qq.normalized_decay_width('b', mS))
