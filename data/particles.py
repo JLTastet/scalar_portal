@@ -4,8 +4,10 @@ from __future__ import division
 
 import os
 import pandas
+import numpy as np
 
 import constants as cst
+import qcd
 
 _srcdir = os.path.dirname(__file__)
 
@@ -207,3 +209,92 @@ def get_abs_charm(particle):
 def get_abs_beauty(particle):
     # NOTE: Only mesons are handled so far.
     return _get_abs_meson_beauty(particle)
+
+# Quark masses and strong coupling constant
+# -----------------------------------------
+
+def alpha_s(mu, nf):
+    """
+    Computes the strong coupling constant α_s at scale μ with nf dynamical flavors
+    using the `rundec` package, through the `qcd` wrapper from Wilson.
+
+    Note: we use the *non-squared* scale μ, which has dimension +1, instead of μ².
+
+    Running is computed at 5 loops, and decoupling at 4 loops.
+
+    numpy.vectorize is used to emulate NumPy broadcast rules in `mu`, but is not
+    as fast as native vectorization.
+
+    RunDec references:
+    * Chetyrkin, K. G., J. H. Kuehn, and M. Steinhauser.
+      “RunDec: A Mathematica Package for Running and Decoupling of the Strong Coupling and Quark Masses.”
+      Computer Physics Communications 133, no. 1 (December 2000): 43–65.
+      https://doi.org/10.1016/S0010-4655(00)00155-7.
+    * Schmidt, Barbara, and Matthias Steinhauser.
+      “CRunDec: A C++ Package for Running and Decoupling of the Strong Coupling and Quark Masses.”
+      Computer Physics Communications 183, no. 9 (September 2012): 1845–48.
+      https://doi.org/10.1016/j.cpc.2012.03.023.
+    * Herren, Florian, and Matthias Steinhauser.
+      “Version 3 of {\tt RunDec} and {\tt CRunDec}.”
+      Computer Physics Communications 224 (March 2018): 333–45.
+      https://doi.org/10.1016/j.cpc.2017.11.014.
+
+    Wilson references:
+    * Website: https://wilson-eft.github.io/
+    * Source code: https://github.com/wilson-eft/wilson
+    * Paper (for the Wilson RG running & matching, not used here):
+      Aebischer, Jason, Jacky Kumar, and David M. Straub. :
+      “: A Python Package for the Running and Matching of Wilson Coefficients above and below the Electroweak Scale.”
+      The European Physical Journal C 78, no. 12 (December 19, 2018): 1026.
+      https://doi.org/10.1140/epjc/s10052-018-6492-7.
+    """
+    return np.vectorize(lambda _mu: qcd.alpha_s(_mu, nf, alphasMZ=cst.alpha_s_MZ, loop=5), cache=True)(mu)
+
+_pole_masses = {
+    'u': None,
+    'd': None,
+    's': None,
+    'c': 1.5,
+    'b': 4.8,
+    't': cst.m_t_os
+}
+
+def on_shell_mass(q):
+    """
+    Returns the approximate pole mass of the chosen quark.
+
+    This really only makes sense for the top quark.
+    """
+    try:
+        M_q = _pole_masses[q]
+    except KeyError:
+        raise(ValueError('Unknown quark {}.'.format(q)))
+    if M_q is None:
+        raise(ValueError('The pole mass is ill-defined for {}.'.format(q)))
+    else:
+        return M_q
+
+def msbar_mass(q, mu, nf):
+    """
+    Returns the running quark mass in the MSbar scheme at a scale μ, in a
+    theory with nf dynamical flavors.
+
+    We use CRunDec through a slightly modified version of the `wilson.util.qcd` wrapper.
+    """
+    if q in ['u', 'd', 't']:
+        raise(ValueError('MSbar mass not implemented for {} quark.'.format(q)))
+    elif q == 's':
+        return np.vectorize(
+            lambda _mu: qcd.m_s(cst.m_s_msbar_2GeV, _mu, nf, alphasMZ=cst.alpha_s_MZ, loop=5),
+            cache=True)(mu)
+    elif q == 'c':
+        return np.vectorize(
+            lambda _mu: qcd.m_c(cst.m_c_si, _mu, nf, alphasMZ=cst.alpha_s_MZ, loop=5),
+            cache=True)(mu)
+    elif q == 'b':
+        return np.vectorize(
+            lambda _mu: qcd.m_b(cst.m_b_si, _mu, nf, alphasMZ=cst.alpha_s_MZ, loop=5),
+            cache=True)(mu)
+    else:
+        raise(ValueError('Unknown quark {}.'.format(q)))
+

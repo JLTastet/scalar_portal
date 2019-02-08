@@ -105,3 +105,39 @@ def test_is_lepton():
     assert_equals(is_lepton('e+')  , True)
     assert_equals(is_lepton('mu')  , True)
     assert_equals(is_lepton('tau-'), True)
+
+def test_alpha_s():
+    # The allowed error corresponds to the difference between 4- and 5-loop
+    # calculations.
+    assert(abs(alpha_s(  3., 4) - 0.2539    ) < 3e-4)
+    assert(abs(alpha_s(100., 5) - 0.11647473) < 3e-8)
+    assert(abs(alpha_s(500., 6) - 0.095273  ) < 5e-6)
+    assert_equals(alpha_s(M_Z, 5), alpha_s_MZ)
+
+def test_on_shell_mass():
+    assert_raises(ValueError, lambda: on_shell_mass('u'))
+    assert_raises(ValueError, lambda: on_shell_mass('d'))
+    assert_raises(ValueError, lambda: on_shell_mass('s'))
+    assert(abs(on_shell_mass('c') -   1.5) < 1.5)
+    assert(abs(on_shell_mass('b') -   5. ) < 0.5)
+    assert(abs(on_shell_mass('t') - 173.0) < 0.4)
+    assert_raises(ValueError, lambda: on_shell_mass('~t'))
+
+def test_msbar_mass():
+    mu = np.array([1.0, 1.28, 2.0, 3.0, 4.18])
+    assert_raises(ValueError, lambda: msbar_mass('u', mu, 3))
+    assert_raises(ValueError, lambda: msbar_mass('d', mu, 3))
+    assert_raises(ValueError, lambda: msbar_mass('t', mu, 6))
+    assert(np.all(msbar_mass('s', mu, 3) > 0))
+    assert(np.all(msbar_mass('c', mu, 4) > 0))
+    assert(np.all(msbar_mass('b', mu, 5) > 0))
+    eps = 1e-14
+    assert(abs(msbar_mass('s', 2.0, 3) - m_s_msbar_2GeV) < eps)
+    assert(abs(msbar_mass('c', m_c_si, 4) - m_c_si) < eps)
+    assert(abs(msbar_mass('b', m_b_si, 5) - m_b_si) < eps)
+    assert_raises(ValueError, lambda: msbar_mass('b', mu, 2))
+    assert_raises(ValueError, lambda: msbar_mass('t', mu, 7))
+    assert_raises(ValueError, lambda: msbar_mass('~t', mu, 6))
+    # Not implemented
+    assert_raises(ValueError, lambda: msbar_mass('s', mu, 6))
+    assert_raises(ValueError, lambda: msbar_mass('c', mu, 6))
