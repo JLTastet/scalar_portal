@@ -36,8 +36,8 @@ assert(_upper_lim <= _pi_mu_ratio_table[-1,0])
 
 # FIXME: workaround for SciPy 0.15.1
 _itp = si.interp1d(
-    _pi_mu_ratio_table[0:_upper_idx,0], _pi_mu_ratio_table[0:_upper_idx,1],
-    kind='cubic',
+    _pi_mu_ratio_table[0:_upper_idx+1,0], _pi_mu_ratio_table[0:_upper_idx+1,1],
+    kind='linear',
     bounds_error=False,
     fill_value=0.,
     assume_sorted=False
