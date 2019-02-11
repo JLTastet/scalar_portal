@@ -74,6 +74,13 @@ def test_two_gluon_width():
     w = gg.normalized_decay_width(mS)
     assert(all(w[mS >= 2.0] > 0))
     assert(all(np.isnan(w[mS < 2.0])))
+    eps = 1e-8
+    target = np.array([
+        5.346506003380509e-8,3.366555346862895e-7,1.7387372280010782e-6])
+    # Here we compute the error relative to the maximum value, in order to
+    # account for numerical cancellations in small decay widths, which reduce
+    # the relative precision.
+    assert(np.all(np.abs(w[mS >= 2] - target) <= eps * np.max(target)))
 
 def test_two_quark_width():
     mS = np.array([0.01, 0.1, 0.5, 1.0, 2.0, 2.2, 4.0, 10.0])
