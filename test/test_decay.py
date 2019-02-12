@@ -83,13 +83,19 @@ def test_two_gluon_width():
     assert(np.all(np.abs(w[mS >= 2] - target) <= eps * np.max(target)))
 
 def test_two_quark_width():
-    mS = np.array([0.01, 0.1, 0.5, 1.0, 2.0, 2.2, 4.0, 10.0])
+    mS = np.array([0.01, 0.1, 0.5, 1.0, 2.0, 3.0, 4.0, 5.0, 10.0, 11.0])
+    valid = (mS >= 2.0) & (mS < 2*get_mass('B'))
     w = qq.normalized_decay_width('s', mS)
-    assert(all(w[mS >= 2.0] > 0))
-    assert(all(np.isnan(w[mS < 2.0])))
+    assert(np.all(w[valid] > 0))
+    assert(np.all(np.isnan(w[~valid])))
+    eps = 1e-8
+    target = np.array([
+        6.850535126425071e-8, 7.463155026546353e-8, 8.312529294924812e-8,
+        9.208282350175197e-8, 1.359595676119765e-7])
+    assert(np.all(np.abs(w[valid] - target) <= eps * target))
     w = qq.normalized_decay_width('c', mS)
-    print w
-    with np.errstate(invalid='ignore'):
-        assert(all(w[mS >= 2*rg.get_quark_mass('c', mS)] > 0))
-    assert(all(np.isnan(w[mS < 2.0])))
+    assert(np.all(w[valid & (mS > 2*get_mass('D'))] > 0))
+    assert(np.all(np.isnan(w[~valid])))
+    target = np.array([0.000012532775792826198, 0.000018519975220329018])
+    assert(np.all(np.abs(w[valid & (mS >= 5.0)] - target) <= eps * target))
     assert_raises(ValueError, lambda: qq.normalized_decay_width('b', mS))

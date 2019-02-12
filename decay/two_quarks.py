@@ -6,7 +6,7 @@ from __future__ import absolute_import
 import numpy as np
 
 from ..data.constants import *
-from ..data.qcd_rg import *
+from ..data.particles import *
 
 def _beta(mq, mS):
     return (1 - 4*(mq/mS)**2)**(1/2)
@@ -17,28 +17,40 @@ def _Delta_QCD(aS, Nf):
 
 def _Delta_t(aS, mq, mS):
     # We have to use the pole mass for the top quark.
-    return (aS/pi)**2 * (1.57 - (4/3)*np.log(mS/m_t_pole) + (4/9)*np.log(mq/mS)**2)
+    mt = on_shell_mass('t')
+    return (aS/pi)**2 * (1.57 - (4/3)*np.log(mS/mt) + (4/9)*np.log(mq/mS)**2)
 
 _lower_validity_bound = 2.0 # GeV
 
-_Nf = 3 # Number of light quark flavors.
+# Number of dynamical quarks
+# Nf = 4 throughout the considered mass range.
+_Nf = 4
+
+# q qbar thresholds
+_thresholds = {
+    's': 2 * get_mass('K'),
+    'c': 2 * get_mass('D'),
+    'b': 2 * get_mass('B'),
+}
 
 def normalized_decay_width(q, mS):
     """
     Computes the decay width into two quarks: S -> q qbar, for q ∈ {s, c}.
 
-    This computation is only valid above 2 GeV, and will return NaNs below.
+    This computation is only valid above 2 GeV, away from the c threshold, and
+    below the b threshold. It will return NaNs outside this range.
     """
     if q not in ['s', 'c']:
         raise(ValueError('S -> {} {}bar not implemented.'.format(q, q)))
-    # Here, NaNs are meaningful: they are produced for masses for which the computation is invalid.
-    # So there is no need for NumPy to print creepy warnings.
-    with np.errstate(invalid='ignore'):
-        mq = get_quark_mass(q, mu=mS)
-        aS = alpha_s(mS)
-        w = 3*mS*mq**2/(8*pi*v**2) * _beta(mq, mS)**3 * (1 + _Delta_QCD(aS, _Nf) + _Delta_t(aS, mq, mS))
-        open_channel = mS > 2*mq
-        res = np.zeros_like(w)
-        res[open_channel] = w[open_channel]
-        res[mS < _lower_validity_bound] = float('nan')
-    return res
+    w = np.zeros_like(mS)
+    valid = (mS >= _lower_validity_bound) & (mS < _thresholds['b'])
+    w[~valid] = np.nan
+    open_channels = valid & (mS >= _thresholds[q])
+    # Only do the calculation for open channels
+    mS_open = np.array(mS)[open_channels]
+    mq = msbar_mass(q, mu=mS_open, nf=_Nf)
+    aS = alpha_s(mu=mS_open, nf=_Nf)
+    # We set β=1, since quarks are assumed to be massless in this calculation.
+    w[open_channels] = 3*mS_open*mq**2/(8*pi*v**2) \
+        * (1 + _Delta_QCD(aS, _Nf) + _Delta_t(aS, mq, mS_open))
+    return w
