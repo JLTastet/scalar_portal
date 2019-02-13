@@ -85,17 +85,45 @@ def test_two_gluon_width():
 def test_two_quark_width():
     mS = np.array([0.01, 0.1, 0.5, 1.0, 2.0, 3.0, 4.0, 5.0, 10.0, 11.0])
     valid = (mS >= 2.0) & (mS < 2*get_mass('B'))
+    # Test S -> s sbar (always far from the threshold).
     w = qq.normalized_decay_width('s', mS)
     assert(np.all(w[valid] > 0))
     assert(np.all(np.isnan(w[~valid])))
     eps = 1e-8
     target = np.array([
-        6.850535126425071e-8, 7.463155026546353e-8, 8.312529294924812e-8,
-        9.208282350175197e-8, 1.359595676119765e-7])
+        6.76124578665207e-8, 7.427821148146254e-8, 8.292873563795307e-8,
+        9.195446037707259e-8, 1.3592134596330357e-7])
     assert(np.all(np.abs(w[valid] - target) <= eps * target))
+    # Test the range of validity of the formula for S -> c cbar.
     w = qq.normalized_decay_width('c', mS)
     assert(np.all(w[valid & (mS > 2*get_mass('D'))] > 0))
     assert(np.all(np.isnan(w[~valid])))
-    target = np.array([0.000012532775792826198, 0.000018519975220329018])
-    assert(np.all(np.abs(w[valid & (mS >= 5.0)] - target) <= eps * target))
+    # Test S -> c cbar near the threshold.
+    mS = np.array([3.75, 4, 4.5, 5, 10])
+    w = qq.normalized_decay_width('c', mS)
+    eps = 1e-8
+    target = np.array([
+        5.745753285992689e-6, 7.521215316538118e-6, 9.090351049835501e-6,
+        0.000010189686857190758, 0.00001780299310120903])
+    assert(np.all(np.abs(w - target) <= eps * target))
+    # Test QCD corrections
+    beta = np.array([0.01, 0.1, 0.3, 0.5, 0.7, 0.9, 0.99])
+    eps = 1e-13
+    target = np.array([
+        492.5263641647134, 48.6432489800492, 15.641285460481056,
+        8.300452608332847, 4.022675132174538, -0.44454292663622885,
+        -5.426657197539063])
+    assert(np.all(np.abs(qq._Delta_H(beta) - target) <= eps * np.abs(target)))
     assert_raises(ValueError, lambda: qq.normalized_decay_width('b', mS))
+
+def test_dilogarithm():
+    y = np.array([-1000, -100, -10, -1, -0.8, -0.6, -0.4, -0.2, 0, 0.2, 0.4, 0.6, 0.8, 1])
+    eps = 1e-14
+    target = np.array([
+        -25.502475813889966,-12.23875517731494,-4.198277886858104,
+        -0.8224670334241132, -0.6797815878346812, -0.5281071740446666,
+        -0.3658325775124496, -0.1908001377775357, 0., 0.21100377543970492,
+        0.4492829744712819, 0.7275863077163336, 1.0747946000082484,
+        1.6449340668482264])
+    # Since the target can be negative, we need to take its absolute value.
+    assert(np.all(np.abs(qq.Li2(y) - target) <= eps * np.abs(target)))
