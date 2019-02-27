@@ -76,6 +76,8 @@ def _normalized_decay_width_near_threshold(q, mS):
     try:
         Mq = on_shell_mass(q)
         aS = alpha_s(mu=mS, nf=_Nf)
+        # FIXME: use the mass of the lightest stable hadron containing Q
+        # Ref: arXiv:1310.8042, p. 2
         beta = _beta(Mq, mS)
         w = 3*mS*Mq**2/(8*pi*v**2) * beta**3 * (1 + (4/3)*(aS/pi)*_Delta_H(beta))
         return w
