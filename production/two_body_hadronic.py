@@ -9,6 +9,43 @@ from ..data.form_factors import *
 
 import numpy as np
 
+# ξⁱʲ_Q constants from the effective flavor-changing Lagrangian (2.11).
+#   Values from Kyrylo's thesis (Table 1).
+_xi_d_ds = 3.3e-6
+_xi_d_db = 7.9e-5
+_xi_d_sb = 3.6e-4
+_xi_u_uc = 1.4e-9
+_xi_ref = {
+    ('D', 2, 1): _xi_d_ds,
+    ('D', 3, 1): _xi_d_db,
+    ('D', 3, 2): _xi_d_sb,
+    ('U', 2, 1): _xi_u_uc
+}
+
+def xi(UD, i, j):
+    r"""
+    Absolute value of the constant $\xi_Q^{ij}$ from the effective
+    flavor-changing Lagrangian.
+
+    We assume all light quarks (u, d, s, c) to be massless.
+
+    NOTE: The ambiguity regarding which renormalization scheme to use leads to
+    large uncertainties on this value, which is the symptom of potentially
+    large QCD corrections. Here we use the on-shell scheme, which results in a
+    conservative estimate compared to MSbar.
+    """
+    if not i > j:
+        raise(ValueError('Initial generation i={} must be higher than j={}.'.format(i, j)))
+    prefactor = 3*sqrt2*GF / (16*pi**2)
+    if UD == 'D':
+        mt = on_shell_mass('t') #FIXME
+        return prefactor * ckm(3,j) * mt**2 * ckm(3,i)
+    elif UD == 'U':
+        mb = on_shell_mass('b') #FIXME
+        return prefactor * ckm(j,3) * mb**2 * ckm(i,3)
+    else:
+        raise(ValueError('Wrong quark type {} (must be U or D).'.format(UD)))
+
 def _scalar_momentum(mY, mY1, mS):
     with np.errstate(invalid='ignore'):
         return np.sqrt( (mY**2 - (mS+mY1)**2) * (mY**2 - (mS-mY1)**2) ) / (2*mY)
@@ -59,7 +96,7 @@ def _get_xi(Y, Y1):
 def _available_mass(Y, Y1):
     return get_mass(Y) - get_mass(Y1)
 
-def normalized_amplitude(Y, Y1, mS):
+def _normalized_amplitude(Y, Y1, mS):
     """
     Computes the transition amplitude for the process Y_q -> S Y'_q', divided by
     the mixing angle θ.
@@ -80,7 +117,7 @@ def normalized_decay_width(Y, Y1, mS):
     Computes the decay width for the process Y_q -> S Y'_q', divided by the
     mixing angle θ.
     """
-    A = normalized_amplitude(Y, Y1, mS)
+    A = _normalized_amplitude(Y, Y1, mS)
     mY  = get_mass(Y )
     mY1 = get_mass(Y1)
     pS = np.where(mS < _available_mass(Y, Y1), _scalar_momentum(mY, mY1, mS), 0.)
