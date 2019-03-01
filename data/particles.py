@@ -5,6 +5,7 @@ from __future__ import division
 import os
 import pandas
 import numpy as np
+from particletools.tables import PYTHIAParticleData
 
 import constants as cst
 import qcd
@@ -14,12 +15,12 @@ _srcdir = os.path.dirname(__file__)
 # Meson properties
 # ----------------
 
-_meson_df = pandas.read_table(os.path.join(_srcdir, 'meson_properties.dat'))
-_meson_names = list(_meson_df.Name)
-
 # Special cases for K_S0 and K_L0
 _k0_codes = {'K_S': 310, 'K_L': 130}
 _k0_names = {val: key for key, val in _k0_codes.items()}
+
+_meson_df = pandas.read_table(os.path.join(_srcdir, 'meson_properties.dat'))
+_meson_names = list(_meson_df.Name) + _k0_codes.keys()
 
 def _get_meson(feature, value):
     query = _meson_df[_meson_df[feature] == value]
@@ -144,6 +145,18 @@ def _get_lepton_mass(lepton_name):
 def _get_lepton_spin_code(lepton_name):
     return 2
 
+# Generic particle properties
+# ---------------------------
+
+_pdata = PYTHIAParticleData()
+
+def _get_generic_pdg_id(particle):
+    try:
+        pdg_id = _pdata.pdg_id(particle)
+    except:
+        raise(ValueError("Particle '{}' not found in PYTHIA database.".format(particle)))
+    return pdg_id
+
 # Public API
 # ----------
 
@@ -168,8 +181,12 @@ def is_lepton(particle):
         return False
 
 def get_pdg_id(particle):
-    # NOTE: Only mesons are handled so far.
-    return _get_meson_pdg_id(particle)
+    if is_meson(particle):
+        # The PYTHIA database is sometimes inaccurate for mesons, so we
+        # manually override it in this specific case.
+        return _get_meson_pdg_id(particle)
+    else:
+        return _get_generic_pdg_id(particle)
 
 def get_name(pdg_id):
     # NOTE: Only mesons are handled so far.

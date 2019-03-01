@@ -20,11 +20,23 @@ def test_get_pdg_id():
     assert_equals(get_pdg_id('K*(1410)-'     ), - 100323)
     assert_equals(get_pdg_id('K_1(1270)bar0' ), -  10313)
     assert_equals(get_pdg_id('K*_2(1430)0'   ), +    315)
+    assert_equals(is_meson('K_L0'), True)
+    assert_equals(is_meson('K_S0'), True)
+    # Test lepton PDG IDs
+    assert_equals(get_pdg_id('e+'     ), -11)
+    assert_equals(get_pdg_id('mu-'    ), +13)
+    assert_equals(get_pdg_id('nu_ebar'), -12)
+    # Test quarks & gluon PDG IDs
+    assert_equals(get_pdg_id('cbar'), -4)
+    assert_equals(get_pdg_id('t'   ), +6)
+    assert_equals(get_pdg_id('g'   ), 21)
+    # Test γ PDG ID
+    assert_equals(get_pdg_id('gamma'), 22)
     # Try with a few non-existent particles...
     assert_raises(ValueError, lambda: get_pdg_id('pibar0')    )
     assert_raises(ValueError, lambda: get_pdg_id('K_L+')      )
     assert_raises(ValueError, lambda: get_pdg_id('K_Sbar0')   )
-    assert_raises(ValueError, lambda: get_pdg_id('~Gravitino'))
+    assert_raises(ValueError, lambda: get_pdg_id('gamma0')    )
     # Empty particle string
     assert_raises(ValueError, lambda: get_pdg_id(''))
 
