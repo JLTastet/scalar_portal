@@ -7,6 +7,8 @@ import numpy as np
 
 from ..data.constants import *
 from ..data.particles import *
+from ..api.channel import DecayChannel, format_pythia_string
+
 
 # Number of dynamical flavors
 # This calculation is only used above 2 GeV, so we are above the c threshold.
@@ -65,3 +67,19 @@ def normalized_decay_width(mS):
         * (mS[valid]**3/(8*pi*v**2)) * (1 + mt**2/(16*v**2*pi**2))
     w[~valid] = float('nan')
     return w
+
+
+class TwoGluons(DecayChannel):
+    '''
+    Decay channel 'S -> g g'.
+    '''
+    def __init__(self):
+        super(TwoGluons, self).__init__(2 * ['g'])
+
+    def normalized_width(self, mS):
+        return normalized_decay_width(mS)
+
+    def pythia_string(self, branching_ratio, scalar_id):
+        return format_pythia_string(
+            scalar_id, 2 * [get_pdg_id('g')], branching_ratio,
+            matrix_element=pythia_me_mode_hadronize)

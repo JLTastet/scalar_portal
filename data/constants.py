@@ -108,3 +108,9 @@ def ckm(i,j):
         return _ckm_abs[i-1, j-1]
     else:
         raise(ValueError('Wrong generation index in CKM matrix: ({},{}).'.format(i,j)))
+
+# PYTHIA-related constants
+#    Source: http://home.thep.lu.se/~torbjorn/pythia82html/Welcome.html
+
+# "91 : decay to q qbar or g g, which should shower and hadronize"
+pythia_me_mode_hadronize = 91

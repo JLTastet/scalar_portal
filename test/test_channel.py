@@ -9,6 +9,7 @@ from ..api import channel as ch
 from ..production import two_body_hadronic as hh
 from ..decay import leptonic as lp
 from ..decay import two_pions as pi
+from ..decay import two_gluons as gg
 
 def test_string():
     assert_equals(ch._to_channel_str('B', ['S', 'K*']), 'B -> S K*')
@@ -37,6 +38,13 @@ def test_two_pions():
     assert_equals(ch0.pythia_string(0.42, 9900025), '9900025:addChannel = 1 0.42 0 111 111' )
     assert_equals(ch1.pythia_string(0.42, 9900025), '9900025:addChannel = 1 0.42 0 211 -211')
     assert_raises(ValueError, lambda: pi.TwoPions('pi0 pi0'))
+
+def test_two_gluons():
+    ch = gg.TwoGluons()
+    mS = np.array([2, 3, 5, 10])
+    assert(np.all(ch.normalized_width(mS) == gg.normalized_decay_width(mS)))
+    assert(np.all(ch.is_open(mS)))
+    assert_equals(ch.pythia_string(0.42, 9900025), '9900025:addChannel = 1 0.42 91 21 21')
 
 def test_hadronic_production():
     ch = hh.TwoBodyHadronic('B+', 'K*+')
