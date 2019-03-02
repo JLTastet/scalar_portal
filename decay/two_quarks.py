@@ -93,7 +93,7 @@ def normalized_decay_width(q, mS):
     """
     if q not in ['s', 'c']:
         raise(ValueError('S -> {} {}bar not implemented.'.format(q, q)))
-    w = np.zeros_like(mS)
+    w = np.zeros_like(mS, dtype='float')
     valid = (mS >= _lower_validity_bound) & (mS < _thresholds['b'])
     w[~valid] = np.nan
     open_channels = valid & (mS >= _thresholds[q])

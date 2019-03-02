@@ -60,7 +60,7 @@ def normalized_decay_width(mS):
     # We have to use the top pole mass for the 2-loop radiative corrections.
     aS = alpha_s(mu=mS[valid], nf=_nf)
     mt = on_shell_mass('t')
-    w = np.zeros_like(mS)
+    w = np.zeros_like(mS, dtype='float')
     w[valid] = np.real(F*np.conj(F)) * (aS/(4*pi))**2 \
         * (mS[valid]**3/(8*pi*v**2)) * (1 + mt**2/(16*v**2*pi**2))
     w[~valid] = float('nan')
