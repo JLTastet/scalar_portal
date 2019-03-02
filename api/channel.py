@@ -21,6 +21,15 @@ def _from_channel_str(string):
         raise(ValueError("Failed to parse channel '{}'.".format(string)))
     return parents[0], children
 
+def format_pythia_string(parent_id, children_ids, branching_ratio, matrix_element=0):
+    '''
+    Format the decay parameters into a string readily usable to add the decay
+    channel to the PYTHIA event generator.
+    '''
+    return '{}:addChannel = 1 {} {} {}'.format(
+        parent_id, branching_ratio, matrix_element,
+        ' '.join(str(child_id) for child_id in children_ids))
+
 
 class Channel(with_metaclass(abc.ABCMeta, object)):
     '''
@@ -85,9 +94,10 @@ class ProductionChannel(Channel):
         return mS < threshold
 
     def pythia_string(self, branching_ratio, scalar_id):
-        return '{}:addChannel = 1 {} 0 {} {}'.format(
-            get_pdg_id(self._parent), branching_ratio, scalar_id,
-            ' '.join(str(get_pdg_id(child)) for child in self._other_children))
+        return format_pythia_string(
+            get_pdg_id(self._parent),
+            [scalar_id] + [get_pdg_id(child) for child in self._other_children],
+            branching_ratio)
 
 
 class DecayChannel(Channel):
@@ -102,6 +112,6 @@ class DecayChannel(Channel):
         return mS > threshold
 
     def pythia_string(self, branching_ratio, scalar_id):
-        return '{}:addChannel = 1 {} 0 {}'.format(
-            scalar_id, branching_ratio,
-            ' '.join(str(get_pdg_id(child)) for child in self._children))
+        return format_pythia_string(
+            scalar_id, [get_pdg_id(child) for child in self._children],
+            branching_ratio)
