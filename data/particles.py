@@ -29,6 +29,16 @@ def _get_meson(feature, value):
         raise(ValueError('No meson with {} == {}'.format(feature, value)))
     return query.iloc[0]
 
+def _split_meson_charge(meson_name):
+    # Separates the name of the QCD state and its charge
+    if len(meson_name) >= 4 and meson_name[-4:] == 'bar0':
+        qcd_state, charge = meson_name[:-4], meson_name[-4:]
+    elif len(meson_name) >= 1 and meson_name[-1:] in ['0', '+', '-']:
+        qcd_state, charge = meson_name[:-1], meson_name[-1:]
+    else:
+        raise(ValueError('Unrecognised meson name {}'.format(meson_name)))
+    return qcd_state, charge
+
 def _get_meson_by_name(meson_name):
     try:
         # Handle mesons specified without the electric charge (e.g. `K*`)
@@ -64,16 +74,6 @@ def _get_meson_by_id(pdg_id):
         assert(False) # pragma: no cover
     fullname = qcd_state + charge
     return fullname
-
-def _split_meson_charge(meson_name):
-    # Separates the name of the QCD state and its charge
-    if len(meson_name) >= 4 and meson_name[-4:] == 'bar0':
-        qcd_state, charge = meson_name[:-4], meson_name[-4:]
-    elif len(meson_name) >= 1 and meson_name[-1:] in ['0', '+', '-']:
-        qcd_state, charge = meson_name[:-1], meson_name[-1:]
-    else:
-        raise(ValueError('Unrecognised meson name {}'.format(meson_name)))
-    return qcd_state, charge
 
 def _get_meson_pdg_id(meson_name):
     qcd_state, charge = _split_meson_charge(meson_name)
@@ -171,6 +171,13 @@ def is_meson(particle):
         except:
             return False
     return False
+
+def get_qcd_state(particle):
+    if is_meson(particle):
+        qcd_state, charge = _split_meson_charge(particle)
+        return qcd_state
+    else:
+        raise(ValueError('{} is not a meson.'.format(particle)))
 
 def is_lepton(particle):
     if particle in _lepton_masses:

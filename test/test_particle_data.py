@@ -108,6 +108,16 @@ def test_is_meson():
     assert_equals(is_meson('mu')  , False)
     assert_equals(is_meson('tau-'), False)
 
+def test_get_qcd_state():
+    assert_equals(get_qcd_state('K+'   ), 'K'  )
+    assert_equals(get_qcd_state('Kbar0'), 'K'  )
+    assert_equals(get_qcd_state('K_L0' ), 'K_L')
+    assert_equals(get_qcd_state('K*_0(700)bar0'), 'K*_0(700)')
+    assert_raises(ValueError, lambda: get_qcd_state('K'        ))
+    assert_raises(ValueError, lambda: get_qcd_state('K*_0(700)'))
+    assert_raises(ValueError, lambda: get_qcd_state('e+'       ))
+    assert_raises(ValueError, lambda: get_qcd_state('gamma'    ))
+
 def test_is_lepton():
     assert_equals(is_lepton('pi'        ), False)
     assert_equals(is_lepton('K*_0(1430)'), False)
