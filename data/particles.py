@@ -152,10 +152,15 @@ _pdata = PYTHIAParticleData()
 
 def _get_generic_pdg_id(particle):
     try:
-        pdg_id = _pdata.pdg_id(particle)
+        return _pdata.pdg_id(particle)
     except:
         raise(ValueError("Particle '{}' not found in PYTHIA database.".format(particle)))
-    return pdg_id
+
+def _get_generic_mass(particle):
+    try:
+        return _pdata.mass(particle)
+    except:
+        raise(ValueError("Particle '{}' not found in PYTHIA database.".format(particle)))
 
 # Public API
 # ----------
@@ -205,7 +210,10 @@ def get_mass(particle):
     elif is_meson(particle):
         return _get_meson_mass(particle)
     else:
-        raise(ValueError('Mass of {} is unknown.'.format(particle)))
+        try:
+            return _get_generic_mass(particle)
+        except ValueError:
+            raise(ValueError('Mass of {} is unknown.'.format(particle)))
 
 def get_spin_code(particle):
     """

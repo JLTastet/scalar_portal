@@ -69,7 +69,10 @@ def test_get_mass():
     assert_equals(get_mass('e-' ), m_e  )
     assert_equals(get_mass('mu+'), m_mu )
     assert_equals(get_mass('tau'), m_tau)
-    assert_raises(ValueError, lambda: get_mass('~Gravitino'))
+    assert_equals(get_mass('g'    ), 0      )
+    assert_equals(get_mass('gamma'), 0      )
+    assert_equals(get_mass('Z0'   ), 91.1876)
+    assert_raises(ValueError, lambda: get_mass('W0' ))
     assert_raises(ValueError, lambda: get_mass('mu0'))
 
 def test_get_spin_code():
