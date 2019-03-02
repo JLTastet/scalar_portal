@@ -21,12 +21,14 @@ def normalized_decay_width(l, mS):
     return np.where(mS > threshold, w, 0.)
 
 
-class LeptonicDecayChannel(DecayChannel):
+class Leptonic(DecayChannel):
     '''
     Leptonic decay channel 'S -> l+ l-'.
     '''
     def __init__(self, flavor):
-        super(LeptonicDecayChannel, self).__init__([flavor+'+', flavor+'-'])
+        super(Leptonic, self).__init__([flavor+'+', flavor+'-'])
+        if not flavor in ['e', 'mu', 'tau']:
+            raise(ValueError('{} must be a valid lepton flavor (e, mu, tau)'.format(flavor)))
         self._flavor = flavor
 
     def normalized_width(self, mS):
