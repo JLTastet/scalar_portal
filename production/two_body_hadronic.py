@@ -6,8 +6,10 @@ from __future__ import absolute_import
 from ..data.constants import *
 from ..data.particles import *
 from ..data.form_factors import *
+from ..api.channel import ProductionChannel
 
 import numpy as np
+
 
 # ξⁱʲ_Q constants from the effective flavor-changing Lagrangian (2.11).
 #   Values from Kyrylo's thesis (Table 1).
@@ -122,3 +124,21 @@ def normalized_decay_width(Y, Y1, mS):
     mY1 = get_mass(Y1)
     pS = np.where(mS < _available_mass(Y, Y1), _scalar_momentum(mY, mY1, mS), 0.)
     return ( A**2 * pS ) / ( 8*pi * mY**2 )
+
+
+class TwoBodyHadronic(ProductionChannel):
+    '''
+    Scalar production through exclusive 2-body hadronic decays: H -> S H'.
+    '''
+    def __init__(self, H, H1):
+        super(TwoBodyHadronic, self).__init__(H, [H1])
+        if not (is_meson(H) and is_meson(H1)):
+            raise(ValueError('{} and {} must be mesons.'.format(H, H1)))
+        try:
+            self._Y  = get_qcd_state(H )
+            self._Y1 = get_qcd_state(H1)
+        except:
+            raise(ValueError('The charges of {} and {} must be specified.'.format(H, H1)))
+
+    def normalized_width(self, mS):
+        return normalized_decay_width(self._Y, self._Y1, mS)

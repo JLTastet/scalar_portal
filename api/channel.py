@@ -71,6 +71,25 @@ class Channel(with_metaclass(abc.ABCMeta, object)):
         pass # pragma: no cover
 
 
+class ProductionChannel(Channel):
+    '''
+    Wraps a decay channel containing the scalar particle in the final state.
+    '''
+    def __init__(self, parent, other_children):
+        super(ProductionChannel, self).__init__(parent, ['S'] + other_children)
+        self._other_children = other_children
+
+    def is_open(self, mS):
+        threshold = ( get_mass(self._parent)
+                      - sum(get_mass(child) for child in self._other_children) )
+        return mS < threshold
+
+    def pythia_string(self, branching_ratio, scalar_id):
+        return '{}:addChannel = 1 {} 0 {} {}'.format(
+            get_pdg_id(self._parent), branching_ratio, scalar_id,
+            ' '.join(str(get_pdg_id(child)) for child in self._other_children))
+
+
 class DecayChannel(Channel):
     '''
     Wraps a decay channel of the scalar particle.

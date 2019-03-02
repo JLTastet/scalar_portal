@@ -6,6 +6,7 @@ from nose.tools import assert_equals, assert_raises
 import numpy as np
 
 from ..api import channel as ch
+from ..production import two_body_hadronic as hh
 from ..decay import leptonic as lp
 
 def test_string():
@@ -24,3 +25,14 @@ def test_leptonic():
     assert_equals(ch.pythia_string(0.42, 9900025), '9900025:addChannel = 1 0.42 0 -13 13')
     assert_raises(ValueError, lambda: lp.Leptonic("tau'"))
     assert_raises(ValueError, lambda: lp.Leptonic('pi0' ))
+
+def test_hadronic_production():
+    ch = hh.TwoBodyHadronic('B+', 'K*+')
+    mS = np.array([0, 0.1, 0.5, 1, 2, 3, 5])
+    assert(np.all(ch.normalized_width(mS) == hh.normalized_decay_width('B', 'K*', mS)))
+    assert(np.all(ch.width(mS, 0.25) == 0.25**2 * hh.normalized_decay_width('B', 'K*', mS)))
+    assert(np.all(ch.is_open(mS) == [True, True, True, True, True, True, False]))
+    assert_equals(ch.pythia_string(0.42, 9900025), '521:addChannel = 1 0.42 0 9900025 323')
+    assert_raises(ValueError, lambda: hh.TwoBodyHadronic('B+', 'e+' ))
+    assert_raises(ValueError, lambda: hh.TwoBodyHadronic('B+', 'K*' ))
+    assert_raises(ValueError, lambda: hh.TwoBodyHadronic('B' , 'K*0'))
