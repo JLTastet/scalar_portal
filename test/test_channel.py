@@ -8,6 +8,7 @@ import numpy as np
 from ..api import channel as ch
 from ..production import two_body_hadronic as hh
 from ..decay import leptonic as lp
+from ..decay import two_pions as pi
 
 def test_string():
     assert_equals(ch._to_channel_str('B', ['S', 'K*']), 'B -> S K*')
@@ -25,6 +26,17 @@ def test_leptonic():
     assert_equals(ch.pythia_string(0.42, 9900025), '9900025:addChannel = 1 0.42 0 -13 13')
     assert_raises(ValueError, lambda: lp.Leptonic("tau'"))
     assert_raises(ValueError, lambda: lp.Leptonic('pi0' ))
+
+def test_two_pions():
+    ch0 = pi.TwoPions('neutral')
+    ch1 = pi.TwoPions('charged')
+    mS = np.array([0.1, 0.25, 0.3, 1])
+    assert(np.all(ch0.normalized_width(mS) == pi.normalized_decay_width('neutral', mS)))
+    assert(np.all(ch1.normalized_width(mS) == pi.normalized_decay_width('charged', mS)))
+    assert(np.all(ch0.is_open(mS) == [False, False, True, True]))
+    assert_equals(ch0.pythia_string(0.42, 9900025), '9900025:addChannel = 1 0.42 0 111 111' )
+    assert_equals(ch1.pythia_string(0.42, 9900025), '9900025:addChannel = 1 0.42 0 211 -211')
+    assert_raises(ValueError, lambda: pi.TwoPions('pi0 pi0'))
 
 def test_hadronic_production():
     ch = hh.TwoBodyHadronic('B+', 'K*+')

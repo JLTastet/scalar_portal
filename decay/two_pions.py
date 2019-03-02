@@ -8,6 +8,8 @@ import numpy as np
 import scipy.interpolate as si
 
 from . import leptonic as lp
+from ..api.channel import DecayChannel
+
 
 _srcdir = os.path.dirname(__file__)
 # Load the table containing the Br(S -> pi pi) / Br(S -> mu+ mu-) ratio.
@@ -66,3 +68,21 @@ def normalized_decay_width(final_state, mS):
     else:
         raise(ValueError('Unknown final state {}.'.format(final_state)))
     return fraction * _normalized_total_decay_width(mS)
+
+
+class TwoPions(DecayChannel):
+    '''
+    Decay channel 'S -> π⁰ π⁰' or 'S -> π⁺ π⁻'.
+    '''
+    def __init__(self, final_state):
+        if final_state == 'neutral':
+            children = ['pi0', 'pi0']
+        elif final_state == 'charged':
+            children = ['pi+', 'pi-']
+        else:
+            raise(ValueError("Final state must be either 'neutral' (2 pi0) or 'charged' (pi+ pi-)."))
+        super(TwoPions, self).__init__(children)
+        self._final_state = final_state
+
+    def normalized_width(self, mS):
+        return normalized_decay_width(self._final_state, mS)
