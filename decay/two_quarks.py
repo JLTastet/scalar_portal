@@ -91,6 +91,7 @@ def normalized_decay_width(q, mS):
     This computation is only valid above 2 GeV and below the b threshold. This
     function will return NaNs outside this range.
     """
+    mS = np.asarray(mS, dtype='float')
     if q not in ['s', 'c']:
         raise(ValueError('S -> {} {}bar not implemented.'.format(q, q)))
     w = np.zeros_like(mS, dtype='float')
@@ -98,7 +99,7 @@ def normalized_decay_width(q, mS):
     w[~valid] = np.nan
     open_channels = valid & (mS >= _thresholds[q])
     # Only do the calculation for open channels
-    mS_open = np.array(mS)[open_channels]
+    mS_open = mS[open_channels]
     w_large_mass = _normalized_decay_width_large_mass(q, mS_open)
     w_threshold  = _normalized_decay_width_near_threshold(q, mS_open)
     # The physical decay width is closer to the minimum, so we return that.

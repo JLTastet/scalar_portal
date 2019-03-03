@@ -56,3 +56,25 @@ def test_hadronic_production():
     assert_raises(ValueError, lambda: hh.TwoBodyHadronic('B+', 'e+' ))
     assert_raises(ValueError, lambda: hh.TwoBodyHadronic('B+', 'K*' ))
     assert_raises(ValueError, lambda: hh.TwoBodyHadronic('B' , 'K*0'))
+
+def test_vectorization():
+    # Check that lists are handled as well as NumPy arrays
+    def check_vectorization(channel, mS):
+        assert(np.all(channel.normalized_width(mS) == \
+                      channel.normalized_width(np.asarray(mS, dtype='float'))))
+        for m in mS:
+            assert(channel.normalized_width(m) == \
+                   channel.normalized_width(np.asarray(m, dtype='float')))
+    mS = [0.1, 0.5, 1, 2, 5, 10]
+    check_vectorization(hh.TwoBodyHadronic('B+', 'pi+'        ), mS)
+    check_vectorization(hh.TwoBodyHadronic('B+', 'K+'         ), mS)
+    check_vectorization(hh.TwoBodyHadronic('B+', 'K*_0(700)+' ), mS)
+    check_vectorization(hh.TwoBodyHadronic('B+', 'K*+'        ), mS)
+    check_vectorization(hh.TwoBodyHadronic('B+', 'K_1(1270)+' ), mS)
+    check_vectorization(hh.TwoBodyHadronic('B+', 'K*_2(1430)+'), mS)
+    check_vectorization(lp.Leptonic('e')                       , mS)
+    mS = [0.1, 0.5, 1]
+    check_vectorization(pi.TwoPions('neutral'), mS)
+    mS = [2, 3, 5]
+    check_vectorization(gg.TwoGluons()   , mS)
+    # check_vectorization(qq.TwoQuarks('c'), mS) # TODO

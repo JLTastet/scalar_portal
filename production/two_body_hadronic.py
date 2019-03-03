@@ -119,6 +119,7 @@ def normalized_decay_width(Y, Y1, mS):
     Computes the decay width for the process Y_q -> S Y'_q', divided by the
     mixing angle θ.
     """
+    mS = np.asarray(mS, dtype='float')
     A = _normalized_amplitude(Y, Y1, mS)
     mY  = get_mass(Y )
     mY1 = get_mass(Y1)

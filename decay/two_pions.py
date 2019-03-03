@@ -67,7 +67,7 @@ def normalized_decay_width(final_state, mS):
         fraction = 2/3
     else:
         raise(ValueError('Unknown final state {}.'.format(final_state)))
-    return fraction * _normalized_total_decay_width(mS)
+    return fraction * _normalized_total_decay_width(np.asarray(mS, dtype='float'))
 
 
 class TwoPions(DecayChannel):

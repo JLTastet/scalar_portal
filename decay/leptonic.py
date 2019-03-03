@@ -12,6 +12,7 @@ def normalized_decay_width(l, mS):
     """
     Computes the decay width for the leptonic decay process S -> l⁺l⁻.
     """
+    mS = np.asarray(mS, dtype='float')
     if not is_lepton(l):
         raise(ValueError('{} must be a lepton.'.format(l)))
     ml = get_mass(l)
