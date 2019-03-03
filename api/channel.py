@@ -51,6 +51,14 @@ class Channel(with_metaclass(abc.ABCMeta, object)):
         '''
         pass # pragma: no cover
 
+    def is_valid(self, mS):
+        '''
+        Whether the decay width calculation is valid for the considered mass.
+
+        This is equivalent to checking whether the result is finite and not NaN.
+        '''
+        return np.isfinite(self.normalized_width(mS))
+
     @abc.abstractmethod
     def normalized_width(self, mS):
         '''

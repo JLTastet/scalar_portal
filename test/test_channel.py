@@ -24,6 +24,7 @@ def test_leptonic():
     assert(np.all(ch.normalized_width(mS) == lp.normalized_decay_width('mu', mS)))
     assert(np.all(ch.width(mS, 0.25) == 0.25**2 * lp.normalized_decay_width('mu', mS)))
     assert(np.all(ch.is_open(mS) == [False, True, True, True, True]))
+    assert(np.all(ch.is_valid(mS)))
     assert_equals(ch.pythia_string(0.42, 9900025), '9900025:addChannel = 1 0.42 0 -13 13')
     assert_raises(ValueError, lambda: lp.Leptonic("tau'"))
     assert_raises(ValueError, lambda: lp.Leptonic('pi0' ))
@@ -35,6 +36,8 @@ def test_two_pions():
     assert(np.all(ch0.normalized_width(mS) == pi.normalized_decay_width('neutral', mS)))
     assert(np.all(ch1.normalized_width(mS) == pi.normalized_decay_width('charged', mS)))
     assert(np.all(ch0.is_open(mS) == [False, False, True, True]))
+    assert(np.all(ch0.is_valid(mS)))
+    assert(np.all(~ch0.is_valid([1.5, 2, 5])))
     assert_equals(ch0.pythia_string(0.42, 9900025), '9900025:addChannel = 1 0.42 0 111 111' )
     assert_equals(ch1.pythia_string(0.42, 9900025), '9900025:addChannel = 1 0.42 0 211 -211')
     assert_raises(ValueError, lambda: pi.TwoPions('pi0 pi0'))
@@ -44,6 +47,8 @@ def test_two_gluons():
     mS = np.array([2, 3, 5, 10])
     assert(np.all(ch.normalized_width(mS) == gg.normalized_decay_width(mS)))
     assert(np.all(ch.is_open(mS)))
+    assert(np.all(ch.is_valid(mS)))
+    assert(np.all(~ch.is_valid([0.5, 1, 1.5])))
     assert_equals(ch.pythia_string(0.42, 9900025), '9900025:addChannel = 1 0.42 91 21 21')
 
 def test_hadronic_production():
@@ -52,6 +57,7 @@ def test_hadronic_production():
     assert(np.all(ch.normalized_width(mS) == hh.normalized_decay_width('B', 'K*', mS)))
     assert(np.all(ch.width(mS, 0.25) == 0.25**2 * hh.normalized_decay_width('B', 'K*', mS)))
     assert(np.all(ch.is_open(mS) == [True, True, True, True, True, True, False]))
+    assert(np.all(ch.is_valid(mS)))
     assert_equals(ch.pythia_string(0.42, 9900025), '521:addChannel = 1 0.42 0 9900025 323')
     assert_raises(ValueError, lambda: hh.TwoBodyHadronic('B+', 'e+' ))
     assert_raises(ValueError, lambda: hh.TwoBodyHadronic('B+', 'K*' ))
