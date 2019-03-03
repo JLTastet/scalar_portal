@@ -41,6 +41,9 @@ class Channel(with_metaclass(abc.ABCMeta, object)):
         self._children = children
         self._str = _to_channel_str(parent, children)
 
+    def __str__(self):
+        return _to_channel_str(self._parent, self._children)
+
     @abc.abstractmethod
     def is_open(self, mS):
         '''
