@@ -10,6 +10,7 @@ from ..production import two_body_hadronic as hh
 from ..decay import leptonic as lp
 from ..decay import two_pions as pi
 from ..decay import two_gluons as gg
+from ..decay import two_quarks as qq
 
 def test_string():
     assert_equals(ch._to_channel_str('B', ['S', 'K*']), 'B -> S K*')
@@ -51,6 +52,18 @@ def test_two_gluons():
     assert(np.all(~ch.is_valid([0.5, 1, 1.5])))
     assert_equals(ch.pythia_string(0.42, 9900025), '9900025:addChannel = 1 0.42 91 21 21')
 
+def test_two_quarks():
+    ch_s = qq.TwoQuarks('s')
+    mS = np.array([2, 3, 4, 10])
+    assert(np.all(ch_s.normalized_width(mS) == qq.normalized_decay_width('s', mS)))
+    assert(np.all(ch_s.is_open(mS)))
+    assert(np.all(ch_s.is_valid(mS)))
+    assert(np.all(~ch_s.is_valid([0.5, 1, 1.5, 11])))
+    assert_equals(ch_s.pythia_string(0.42, 9900025), '9900025:addChannel = 1 0.42 91 3 -3')
+    ch_c = qq.TwoQuarks('c')
+    assert(np.all(ch_c.is_open(mS) == [False, False, True, True]))
+    assert_raises(ValueError, lambda: qq.TwoQuarks('t'))
+
 def test_hadronic_production():
     ch = hh.TwoBodyHadronic('B+', 'K*+')
     mS = np.array([0, 0.1, 0.5, 1, 2, 3, 5])
@@ -83,4 +96,4 @@ def test_vectorization():
     check_vectorization(pi.TwoPions('neutral'), mS)
     mS = [2, 3, 5]
     check_vectorization(gg.TwoGluons()   , mS)
-    # check_vectorization(qq.TwoQuarks('c'), mS) # TODO
+    check_vectorization(qq.TwoQuarks('c'), mS)

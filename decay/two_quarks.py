@@ -8,6 +8,8 @@ from scipy.special import spence
 
 from ..data.constants import *
 from ..data.particles import *
+from ..api.channel import DecayChannel, format_pythia_string
+
 
 def _beta(mq, mS):
     """
@@ -100,9 +102,33 @@ def normalized_decay_width(q, mS):
     open_channels = valid & (mS >= _thresholds[q])
     # Only do the calculation for open channels
     mS_open = mS[open_channels]
-    w_large_mass = _normalized_decay_width_large_mass(q, mS_open)
-    w_threshold  = _normalized_decay_width_near_threshold(q, mS_open)
-    # The physical decay width is closer to the minimum, so we return that.
-    # If either calculation returns NaN's, we return the result of the other.
-    w[open_channels] = np.fmin(w_large_mass, w_threshold)
+    if np.any(open_channels):
+        w_large_mass = _normalized_decay_width_large_mass(q, mS_open)
+        w_threshold  = _normalized_decay_width_near_threshold(q, mS_open)
+        # The physical decay width is closer to the minimum, so we return that.
+        # If either calculation returns NaN's, we return the result of the other.
+        w[open_channels] = np.fmin(w_large_mass, w_threshold)
     return w
+
+
+class TwoQuarks(DecayChannel):
+    '''
+    Decay channel 'S -> q qbar'.
+    '''
+    def __init__(self, flavor):
+        if not flavor in ['s', 'c']:
+            raise(ValueError('S -> {} {}bar not implemented.'.format(flavor, flavor)))
+        super(TwoQuarks, self).__init__([flavor, flavor+'bar'])
+        self._q = flavor
+
+    def normalized_width(self, mS):
+        return normalized_decay_width(self._q, mS)
+
+    def pythia_string(self, branching_ratio, scalar_id):
+        id_q = get_pdg_id(self._q)
+        return format_pythia_string(
+            scalar_id, [id_q, -id_q], branching_ratio,
+            matrix_element=pythia_me_mode_hadronize)
+
+    def is_open(self, mS):
+        return mS > _thresholds[self._q]
