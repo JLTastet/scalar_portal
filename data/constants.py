@@ -56,6 +56,11 @@ m_b_si = 4.18
 #   [RPP18] Extracted from Quark Summary Table
 m_t_os = 173.0 # p.40, Mass (direct measurements)
 
+# Scale-invariant top mass, computed by finding the fixed point of the MS-bar
+# mass using the formula from [1], accurate to order O(αs³) + O(α) + O(α αs).
+# [1] Jegerlehner, Kalmykov and Kniehl (2013), 10.1016/j.physletb.2013.04.012
+m_t_si = 174.0
+
 # CKM matrix
 #   [RPP18] Data extracted from chapter 12: CKM Quark-Mixing Matrix
 #   The values quoted below are the absolute values of the (non-squared) CKM matrix elements

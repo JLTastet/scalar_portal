@@ -330,3 +330,32 @@ def msbar_mass(q, mu, nf):
     else:
         raise(ValueError('Unknown quark {}.'.format(q)))
 
+_si_masses = {
+    'c': cst.m_c_si,
+    'b': cst.m_b_si,
+    't': cst.m_t_si,
+}
+
+def scale_invariant_mass(q):
+    """
+    Returns the scale-invariant mass of the heavy quark, in the MS-bar scheme.
+
+    For the c and b quarks, we use the 2018 PDG values [1], while for the top
+    quark we look for the fixed point of the MS-bar mass with Nf=6, using the
+    calculation from [2], which is accurate to order O(αs³) + O(α) + O(α αs),
+    and the Higgs mass from the PDG [1].
+
+    [1] M. Tanabashi et al. (Particle Data Group), Phys. Rev. D 98, 030001 (2018)
+        DOI: 10.1103/PhysRevD.98.030001
+
+    [2] Jegerlehner, Fred, Mikhail Yu Kalmykov, and Bernd A. Kniehl.
+        “On the Difference between the Pole and the MSbar Masses of the Top Quark at the Electroweak Scale.”
+        Physics Letters B 722, no. 1–3 (May 2013): 123–29.
+        https://doi.org/10.1016/j.physletb.2013.04.012.
+    """
+    if q in ['u', 'd', 's']:
+        raise(ValueError('Scale-invariant mass not implemented for the {} quark.'.format(q)))
+    elif q in ['c', 'b', 't']:
+        return _si_masses[q]
+    else:
+        raise(ValueError('Unknown quark {}.'.format(q)))

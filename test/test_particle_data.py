@@ -166,3 +166,10 @@ def test_msbar_mass():
     # Not implemented
     assert_raises(ValueError, lambda: msbar_mass('s', mu, 6))
     assert_raises(ValueError, lambda: msbar_mass('c', mu, 6))
+
+def test_scale_invariant_mass():
+    assert_raises(ValueError, lambda: scale_invariant_mass('s' ))
+    assert_raises(ValueError, lambda: scale_invariant_mass('~t'))
+    assert(abs(scale_invariant_mass('c') -   1.28) <  0.05)
+    assert(abs(scale_invariant_mass('b') -   4.18) <  0.05)
+    assert(abs(scale_invariant_mass('t') - 174.0 ) < 15.  )
