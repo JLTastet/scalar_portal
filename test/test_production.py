@@ -9,11 +9,6 @@ from ..data.particles import *
 from ..production import two_body_hadronic as hh
 
 def test_xi():
-    epsilon = 0.15
-    assert(abs(hh.xi('D', 2, 1) - hh._xi_ref[('D', 2, 1)]) / hh._xi_ref[('D', 2, 1)] < epsilon)
-    assert(abs(hh.xi('D', 3, 1) - hh._xi_ref[('D', 3, 1)]) / hh._xi_ref[('D', 3, 1)] < epsilon)
-    assert(abs(hh.xi('D', 3, 2) - hh._xi_ref[('D', 3, 2)]) / hh._xi_ref[('D', 3, 2)] < epsilon)
-    assert(abs(hh.xi('U', 2, 1) - hh._xi_ref[('U', 2, 1)]) / hh._xi_ref[('U', 2, 1)] < epsilon)
     assert_raises(ValueError, lambda: hh.xi('D', 1, 2))
     assert_raises(ValueError, lambda: hh.xi('Z', 2, 1))
     assert_raises(ValueError, lambda: hh.xi('D', 2, 0))
@@ -21,8 +16,8 @@ def test_xi():
     # Compare numerical values to Mathematica implementation (with on-shell
     # masses for b and t , and u, d, s, c are assumed to be massless).
     xi_dds, xi_uuc, xi_ddb, xi_dsb = (
-        2.9931573728902494e-6, 1.2004587795118054e-9, 0.00007741186200444578,
-        0.0003765465880216251)
+        3.0278603568988333e-6, 9.103687490947078e-10, 0.00007830938334212971,
+        0.0003809123090962853)
     epsilon = 1e-15
     assert(abs(hh.xi('D', 2, 1) - xi_dds) / xi_dds < epsilon)
     assert(abs(hh.xi('D', 3, 1) - xi_ddb) / xi_ddb < epsilon)
@@ -73,65 +68,64 @@ def test_two_body_hadronic_width():
     epsilon = 1e-15
     # B -> S K
     target = np.array([
-        1.8178890537824978e-13, 1.8181759998314708e-13,
-        1.8204730610071367e-13, 1.8467786908971138e-13, 1.9350872562266444e-13,
-        2.1448489908640465e-13])
+        1.8602870173762396e-13, 1.8605806557632914e-13, 1.8629312904592422e-13,
+        1.889850436964034e-13, 1.9802185907651862e-13, 2.1948725218597987e-13])
     w = hh.normalized_decay_width('B', 'K'         , mS)
     assert(np.all(np.abs(w - target) <= epsilon * target))
     # B -> S pi
     target = np.array([
-        4.8131741603627665e-15, 4.81397686174134e-15, 4.82040482124668e-15,
-        4.8943075585523985e-15, 5.147389265689037e-15, 6.083607577286032e-15])
+        4.9254300664076316e-15, 4.92625148889779e-15, 4.93282936535902e-15,
+        5.0084557092617675e-15, 5.267439948779629e-15, 6.225493338710085e-15])
     w = hh.normalized_decay_width('B', 'pi'        , mS)
     assert(np.all(np.abs(w - target) <= epsilon * target))
     # K -> S pi
     target = np.array([
-        6.526058382213544e-20, 6.189058856075263e-20, 3.1563448598987664e-20,
+        6.678263262442073e-20, 6.333404019226674e-20, 3.2299591402536834e-20,
         0, 0, 0])
     w = hh.normalized_decay_width('K', 'pi'        , mS)
     assert(np.all(np.abs(w - target) <= epsilon * target))
     # B -> S K*_0(700)
     mS = np.array([0., 1., 2., 4.])
     target = np.array([
-        3.3687694103831563e-13, 3.36933365198568e-13, 3.2473367055074707e-13,
-        6.846511037354604e-14])
+        3.447337991078414e-13, 3.447915392282109e-13, 3.3230731555016296e-13,
+        7.006189718021021e-14])
     w = hh.normalized_decay_width('B', 'K*_0(700)' , mS)
     assert(np.all(np.abs(w - target) <= epsilon * target))
     # B -> S K*_0(1430)
     target = np.array([
-        3.9483657603365625e-14, 4.818507506774215e-14, 9.193591255832439e-14, 0])
+        4.0404520553792716e-14, 4.930887800512882e-14, 9.408010032682152e-14, 0])
     w = hh.normalized_decay_width('B', 'K*_0(1430)', mS)
     assert(np.all(np.abs(w - target) <= epsilon * target))
     # B -> S K*
     epsilon = 1e-14
     target = np.array([
-        2.1983413727159672e-13, 2.198295527820699e-13, 2.1783213998996578e-13,
-        1.0124106182758784e-13])
+        2.249612487030174e-13, 2.249565572911129e-13, 2.22912559568721e-13,
+        1.0360227019980757e-13])
     w = hh.normalized_decay_width('B', 'K*'        , mS)
     assert(np.all(np.abs(w - target) <= epsilon * target))
     # B -> S K*(1410)
     target = np.array([
-        9.653613744929648e-14, 8.975869028165762e-14, 6.909184749526634e-14, 0])
+        9.87876145856704e-14, 9.185209948881761e-14, 7.070325146331022e-14, 0])
     w = hh.normalized_decay_width('B', 'K*(1410)'  , mS)
     assert(np.all(np.abs(w - target) <= epsilon * target))
     # B -> S K*(1680)
     target = np.array([
-        6.127599210302626e-14, 5.5920851364052253e-14, 3.9742779366554684e-14, 0])
+        6.27051097254405e-14, 5.722507299151126e-14, 4.066968571938808e-14, 0])
     w = hh.normalized_decay_width('B', 'K*(1680)'  , mS)
     assert(np.all(np.abs(w - target) <= epsilon * target))
     # B -> S K_1(1270)
     target = np.array([
-        3.869747607782547e-13, 3.8093443797729307e-13, 3.519440666307941e-13,
-        3.148519435272946e-16])
+        3.960000320317645e-13, 3.898188329844353e-13, 3.601523297769955e-13,
+        3.2219512061024887e-16])
     w = hh.normalized_decay_width('B', 'K_1(1270)' , mS)
     assert(np.all(np.abs(w - target) <= epsilon * target))
     # B -> S K_1(1400)
     target = np.array([
-        6.750450568087554e-15, 5.2827231322776586e-15, 1.6172657867359548e-15, 0])
+        6.907888865453182e-15, 5.405930157795572e-15, 1.6549846870201926e-15, 0])
     w = hh.normalized_decay_width('B', 'K_1(1400)' , mS)
     assert(np.all(np.abs(w - target) <= epsilon * target))
     # B -> S K*_2(1430)
     target = np.array([
-        1.418186637900873e-13, 1.3232936663964834e-13, 9.922995648284822e-14, 0])
+        1.451262487781669e-13, 1.3541563621011354e-13, 1.0154426057836744e-13, 0])
     w = hh.normalized_decay_width('B', 'K*_2(1430)', mS)
     assert(np.all(np.abs(w - target) <= epsilon * target))
