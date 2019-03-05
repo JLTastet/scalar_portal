@@ -72,3 +72,7 @@ class ActiveProcesses(object):
     def list_available_groups(self):
         'List all available groups of processes.'
         return list(self._process_groups)
+
+    def get_active_processes(self):
+        'Return the `Channel` objects for all active processes.'
+        return [self._process_dict[ch] for ch in self._active]
