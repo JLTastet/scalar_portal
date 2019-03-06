@@ -81,6 +81,16 @@ def test_hadronic_production():
     assert_raises(ValueError, lambda: hh.TwoBodyHadronic('B+', 'e+' ))
     assert_raises(ValueError, lambda: hh.TwoBodyHadronic('B+', 'K*' ))
     assert_raises(ValueError, lambda: hh.TwoBodyHadronic('B' , 'K*0'))
+    tau  = hh.get_lifetime('B+')
+    wtot = 1 / tau
+    epsilon = 1e-14
+    assert(abs(ch.parent_width - wtot) <= epsilon * wtot)
+    br1 = ch.normalized_branching_ratio(mS)
+    w1  = ch.normalized_width(mS)
+    assert(np.all(np.abs(wtot*br1 - w1) <= epsilon * w1))
+    br = ch.branching_ratio(mS, 0.25)
+    w  = ch.width(mS, 0.25)
+    assert(np.all(np.abs(wtot*br - w) <= epsilon * w))
 
 def test_vectorization():
     # Check that lists are handled as well as NumPy arrays

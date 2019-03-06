@@ -58,3 +58,23 @@ class DecayBranchingRatios(BranchingRatios):
             raise(ValueError('Can only generate PYTHIA strings for a single mass and coupling.'))
         return {ch_str: channel.pythia_string(self._br[ch_str], self._scalar_id)
                 for ch_str, channel in viewitems(self._channels)}
+
+
+class ProductionBranchingRatios(BranchingRatios):
+    '''
+    Represents a set of production branching ratios for the scalar.
+    '''
+    def __init__(self, *args, **kwargs):
+        super(ProductionBranchingRatios, self).__init__(*args, **kwargs)
+        self._br = {
+            st: w / self._channels[st].parent_width for st, w in viewitems(self._width)}
+        # Ref: https://stackoverflow.com/a/39279912
+        self._max_br = np.fmax.reduce(self._br.values())
+
+    @property
+    def branching_ratios(self):
+        return self._br
+
+    @property
+    def maximum_branching_ratio(self):
+        return self._max_br

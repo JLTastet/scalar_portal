@@ -98,6 +98,7 @@ class ProductionChannel(Channel):
     def __init__(self, parent, other_children):
         super(ProductionChannel, self).__init__(parent, ['S'] + other_children)
         self._other_children = other_children
+        self._parent_width = 1 / get_lifetime(self._parent)
 
     def is_open(self, mS):
         threshold = ( get_mass(self._parent)
@@ -109,6 +110,16 @@ class ProductionChannel(Channel):
             get_pdg_id(self._parent),
             [scalar_id] + [get_pdg_id(child) for child in self._other_children],
             branching_ratio)
+
+    def normalized_branching_ratio(self, mS):
+        return self.normalized_width(mS) / self._parent_width
+
+    def branching_ratio(self, mS, theta):
+        return self.width(mS, theta) / self._parent_width
+
+    @property
+    def parent_width(self):
+        return self._parent_width
 
 
 class DecayChannel(Channel):

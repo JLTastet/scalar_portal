@@ -8,6 +8,7 @@ import numpy as np
 from ..api.branching_ratios import *
 from ..decay.leptonic import Leptonic
 from ..decay.two_gluons import TwoGluons
+from ..production.two_body_hadronic import TwoBodyHadronic
 
 def test_decay_branching_ratios():
     channels = [Leptonic(l) for l in ['e', 'mu', 'tau']]
@@ -43,3 +44,12 @@ def test_decay_pythia_strings():
     assert_equals(strings['S -> e+ e-'    ], '9900025:addChannel = 1 3.14194722291e-05 0 -11 11')
     assert_equals(strings['S -> mu+ mu-'  ], '9900025:addChannel = 1 0.999968580528 0 -13 13'   )
     assert_equals(strings['S -> tau+ tau-'], '9900025:addChannel = 1 0.0 0 -15 15'              )
+
+def test_production_branching_ratios():
+    channels = [TwoBodyHadronic('B+', 'pi+'), TwoBodyHadronic('B+', 'K*_2(1430)+')]
+    mS = np.array([1, 4])
+    br = ProductionBranchingRatios(channels, mS, 1)
+    br_pi = br.branching_ratios['B+ -> S pi+'        ]
+    br_K2 = br.branching_ratios['B+ -> S K*_2(1430)+']
+    maxbr = br.maximum_branching_ratio
+    assert_equals(list(br_K2 > br_pi), [True, False])
