@@ -6,7 +6,7 @@ from future.utils import viewitems, with_metaclass
 import numpy as np
 
 from ..api.channel import Channel
-from ..data.constants import second, default_scalar_id
+from ..data.constants import second, c_si, default_scalar_id
 
 
 class BranchingRatios(object):
@@ -58,6 +58,21 @@ class DecayBranchingRatios(BranchingRatios):
             raise(ValueError('Can only generate PYTHIA strings for a single mass and coupling.'))
         return {ch_str: channel.pythia_string(self._br[ch_str], self._scalar_id)
                 for ch_str, channel in viewitems(self._channels)}
+
+    def pythia_particle_string(self, new=True):
+        '''
+        Returns a string which can be directly read by the PYTHIA event
+        generator to add the scalar particle.
+        '''
+        if self._mS.ndim > 0:
+            raise(ValueError('Can only generate a PYTHIA string for a single scalar mass.'))
+        lifetime_mm = 1e3 * self.lifetime_si * c_si
+        all_prop = '{}:{} = S S 1 0 0 {} 0.0 0.0 0.0 {}'.format(
+            self._scalar_id, 'new' if new else 'all', self._mS, lifetime_mm)
+        is_resonance = '{}:isResonance = false'.format(self._scalar_id)
+        may_decay = '{}:mayDecay = true'.format(self._scalar_id)
+        is_visible = '{}:isVisible = false'.format(self._scalar_id)
+        return '\n'.join([all_prop, is_resonance, may_decay, is_visible])
 
 
 class ProductionBranchingRatios(BranchingRatios):

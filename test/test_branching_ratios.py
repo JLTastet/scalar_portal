@@ -23,6 +23,7 @@ def test_decay_branching_ratios():
         assert(np.all(np.abs(ref_total_width*br.branching_ratios[ch] - ref_widths[ch])
                       <= epsilon * ref_widths[ch]))
     assert_raises(ValueError, lambda: br.pythia_strings())
+    assert_raises(ValueError, lambda: br.pythia_particle_string())
     assert(np.all(np.abs(br.lifetime_si * second * ref_total_width - 1) <= epsilon))
 
 def test_nan_branching_ratio():
@@ -44,6 +45,16 @@ def test_decay_pythia_strings():
     assert_equals(strings['S -> e+ e-'    ], '9900025:addChannel = 1 3.14194722291e-05 0 -11 11')
     assert_equals(strings['S -> mu+ mu-'  ], '9900025:addChannel = 1 0.999968580528 0 -13 13'   )
     assert_equals(strings['S -> tau+ tau-'], '9900025:addChannel = 1 0.0 0 -15 15'              )
+    assert_equals(br.pythia_particle_string(),
+                  '9900025:new = S S 1 0 0 0.5 0.0 0.0 0.0 7.22250988672e-05\n' +
+                  '9900025:isResonance = false\n' +
+                  '9900025:mayDecay = true\n' +
+                  '9900025:isVisible = false')
+    assert_equals(br.pythia_particle_string(new=False),
+                  '9900025:all = S S 1 0 0 0.5 0.0 0.0 0.0 7.22250988672e-05\n' +
+                  '9900025:isResonance = false\n' +
+                  '9900025:mayDecay = true\n' +
+                  '9900025:isVisible = false')
 
 def test_production_branching_ratios():
     channels = [TwoBodyHadronic('B+', 'pi+'), TwoBodyHadronic('B+', 'K*_2(1430)+')]
