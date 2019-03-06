@@ -17,14 +17,13 @@ from ..decay.two_quarks import TwoQuarks
 _production_channels = [
     # Kaon decays
     TwoBodyHadronic('K+'  , 'pi+'),
-    # TODO: double-check PYTHIA configuration for K_L/S, to avoid double-counting
-    # TwoBodyHadronic('K_L0', 'pi0'), # FIXME
-    # TwoBodyHadronic('K_S0', 'pi0'), # FIXME
+    TwoBodyHadronic('K_L0', 'pi0', weak_eigenstate='K0'),
+    TwoBodyHadronic('K_S0', 'pi0', weak_eigenstate='K0'),
     # B meson decays
     TwoBodyHadronic('B+', 'pi+'        ),
     TwoBodyHadronic('B0', 'pi0'        ),
     TwoBodyHadronic('B+', 'K+'         ),
-    TwoBodyHadronic('B0', 'K0'         ), # FIXME
+    TwoBodyHadronic('B0', 'K0'         ), # Final-state mixing handled by PYTHIA
     TwoBodyHadronic('B+', 'K*+'        ),
     TwoBodyHadronic('B0', 'K*0'        ),
     TwoBodyHadronic('B+', 'K*(1410)+'  ),
@@ -47,8 +46,8 @@ _production_groups = {
     # Kaon decays
     'K -> S pi': [
         'K+ -> S pi+'  ,
-        # 'K_L0 -> S pi0', # FIXME
-        # 'K_S0 -> S pi0', # FIXME
+        'K_L0 -> S pi0',
+        'K_S0 -> S pi0',
     ],
     # Pions
     'B -> S pi': [

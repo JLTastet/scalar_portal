@@ -92,6 +92,13 @@ def test_hadronic_production():
     w  = ch.width(mS, 0.25)
     assert(np.all(np.abs(wtot*br - w) <= epsilon * w))
 
+def test_neutral_kaons():
+    ch1 = hh.TwoBodyHadronic('K_L0', 'pi0', weak_eigenstate='K0')
+    mS = np.array([0, 0.1, 0.5, 1, 2, 3, 5])
+    assert(np.all(ch1.normalized_width(mS) == hh.normalized_decay_width('K', 'pi', mS)))
+    ch2 = hh.TwoBodyHadronic('B0', 'K0')
+    assert(np.all(ch2.normalized_width(mS) == hh.normalized_decay_width('B', 'K', mS)))
+
 def test_vectorization():
     # Check that lists are handled as well as NumPy arrays
     def check_vectorization(channel, mS):
