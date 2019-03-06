@@ -5,6 +5,7 @@ from __future__ import absolute_import, division
 import numpy as np
 
 from ..api.active_processes import ActiveProcesses
+from ..data.constants import default_scalar_id
 from ..production.two_body_hadronic import TwoBodyHadronic
 from ..decay.leptonic import Leptonic
 from ..decay.two_pions import TwoPions
@@ -138,7 +139,7 @@ class Model(object):
     Main reference:
         K. Bondarenko, M. Ovchynnikov, "Phenomenology of GeV scale scalar portal"
     '''
-    def __init__(self, scalar_id=9900025):
+    def __init__(self, scalar_id=default_scalar_id):
         self._production = ActiveProcesses(_production_channels, _production_groups)
         self._production.enable_all()
         self._decays = ActiveProcesses(_decay_channels, _decay_groups)

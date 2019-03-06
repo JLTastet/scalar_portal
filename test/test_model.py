@@ -6,10 +6,11 @@ from nose.tools import assert_equals, assert_raises
 import numpy as np
 
 from ..api.model import Model
+from ..data.constants import default_scalar_id
 
 def test_model():
     m = Model()
-    assert_equals(m.scalar_pdg_id, 9900025)
+    assert_equals(m.scalar_pdg_id, default_scalar_id)
     m.decays.disable_all()
     m.decays.enable('LightScalar')
     m.production.disable('K -> S pi')

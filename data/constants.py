@@ -119,3 +119,7 @@ def ckm(i,j):
 
 # "91 : decay to q qbar or g g, which should shower and hadronize"
 pythia_me_mode_hadronize = 91
+
+# Set some default PDG ID for the scalar particle.
+# Here, we choose to prepend 99000 to the SM Higgs ID.
+default_scalar_id = 9900025
