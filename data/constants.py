@@ -24,6 +24,9 @@ vev = v / np.sqrt(2) # GeV
 # Fermi constant
 GF = 1.1663787e-5 # GeV⁻²
 
+# SI units
+second = 1 / 6.582119514e-25
+
 # Lepton masses (in GeV)
 #   [RPP18] Extracted from Lepton Summary Table
 m_e   =    0.51099894e-3
