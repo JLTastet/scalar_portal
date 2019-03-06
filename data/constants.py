@@ -117,6 +117,15 @@ def ckm(i,j):
     else:
         raise(ValueError('Wrong generation index in CKM matrix: ({},{}).'.format(i,j)))
 
+# Lifetimes of long-lived mesons (from [RPP18])
+meson_lifetimes = {
+    'K+'  : 1.2380e-8  * second,
+    'K_S0': 0.8954e-10 * second,
+    'K_L0': 5.116e-8   * second,
+    'B+'  : 1.638e-12  * second,
+    'B0'  : 1.520e-12  * second,
+}
+
 # PYTHIA-related constants
 #    Source: http://home.thep.lu.se/~torbjorn/pythia82html/Welcome.html
 

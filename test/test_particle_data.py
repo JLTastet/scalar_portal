@@ -75,6 +75,16 @@ def test_get_mass():
     assert_raises(ValueError, lambda: get_mass('W0' ))
     assert_raises(ValueError, lambda: get_mass('mu0'))
 
+def test_get_lifetime():
+    assert(abs(get_lifetime('K+'  )/second - 1.238e-8 ) < 0.002e-8 )
+    assert(abs(get_lifetime('K_S0')/second - 8.954e-11) < 0.004e-11)
+    assert(abs(get_lifetime('K_L0')/second - 5.116e-8 ) < 0.021e-8 )
+    assert(abs(get_lifetime('B+'  )/second - 1.638e-12) < 0.004e-12)
+    assert(abs(get_lifetime('B0'  )/second - 1.520e-12) < 0.004e-12)
+    assert_raises(ValueError, lambda: get_lifetime('K-') )
+    assert_raises(ValueError, lambda: get_lifetime('K*+'))
+    assert_raises(ValueError, lambda: get_lifetime('mu+'))
+
 def test_get_spin_code():
     assert_equals(get_spin_code('pi+'       ), 1)
     assert_equals(get_spin_code('K*_0(1430)'), 1)

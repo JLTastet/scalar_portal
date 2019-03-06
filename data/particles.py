@@ -123,6 +123,12 @@ def _get_abs_meson_beauty(meson_name):
     record = _get_meson_by_name(meson_name)
     return abs(record.B)
 
+def _get_meson_lifetime(meson_name):
+    try:
+        return cst.meson_lifetimes[meson_name]
+    except KeyError:
+        raise(ValueError('Lifetime of {} is unknown.'.format(meson_name)))
+
 # Lepton properties
 # -----------------
 
@@ -214,6 +220,14 @@ def get_mass(particle):
             return _get_generic_mass(particle)
         except ValueError:
             raise(ValueError('Mass of {} is unknown.'.format(particle)))
+
+def get_lifetime(particle):
+    """
+    Returns the particle lifetime (average lifetime in its rest frame), in
+    natural units (GeV⁻¹).
+    """
+    # NOTE: Only mesons are handled so far.
+    return _get_meson_lifetime(particle)
 
 def get_spin_code(particle):
     """
