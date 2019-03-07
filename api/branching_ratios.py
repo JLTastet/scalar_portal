@@ -2,6 +2,7 @@
 
 from __future__ import absolute_import, division
 from future.utils import viewitems, with_metaclass
+import abc # Abstract Base Classes
 
 import numpy as np
 
@@ -9,7 +10,7 @@ from ..api.channel import Channel
 from ..data.constants import second, c_si, default_scalar_id
 
 
-class BranchingRatios(object):
+class BranchingRatios(with_metaclass(abc.ABCMeta, object)):
     '''
     Represents a set of computed branching ratios.
     '''
@@ -28,6 +29,17 @@ class BranchingRatios(object):
     @property
     def width(self):
         return self._width
+
+    @property
+    @abc.abstractmethod
+    def branching_ratios(self):
+        pass # pragma: no cover
+
+    def pythia_strings(self):
+        if self._mS.ndim > 0 or self._coupling.ndim > 0:
+            raise(ValueError('Can only generate PYTHIA strings for a single mass and coupling.'))
+        return {ch_str: channel.pythia_string(self.branching_ratios[ch_str], self._scalar_id)
+                for ch_str, channel in viewitems(self._channels)}
 
 
 class DecayBranchingRatios(BranchingRatios):
@@ -52,12 +64,6 @@ class DecayBranchingRatios(BranchingRatios):
     @property
     def branching_ratios(self):
         return self._br
-
-    def pythia_strings(self):
-        if self._mS.ndim > 0 or self._coupling.ndim > 0:
-            raise(ValueError('Can only generate PYTHIA strings for a single mass and coupling.'))
-        return {ch_str: channel.pythia_string(self._br[ch_str], self._scalar_id)
-                for ch_str, channel in viewitems(self._channels)}
 
     def pythia_particle_string(self, new=True):
         '''
@@ -125,3 +131,11 @@ class BranchingRatiosResult(object):
 
     def pythia_particle_string(self, new=True):
         return self._decay.pythia_particle_string(new)
+
+    def pythia_full_string(self):
+        particle_str = self.pythia_particle_string()
+        production_strs = self.production.pythia_strings()
+        decay_strs = self.decays.pythia_strings()
+        full_string = '\n'.join(
+            [particle_str] + production_strs.values() + decay_strs.values())
+        return full_string

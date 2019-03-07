@@ -84,3 +84,14 @@ def test_result_strings():
     decay_br = DecayBranchingRatios(decay_channels, 0.5, 1)
     res = BranchingRatiosResult(production_br, decay_br)
     assert_equals(res.pythia_particle_string(), decay_br.pythia_particle_string())
+    assert_equals(res.pythia_full_string(), '''\
+9900025:new = S S 1 0 0 0.5 0.0 0.0 0.0 7.22250988672e-05
+9900025:isResonance = false
+9900025:mayDecay = true
+9900025:isVisible = false
+521:addChannel = 1 0.355312987843 0 9900025 325
+521:addChannel = 1 0.0123084672076 0 9900025 211
+9900025:addChannel = 1 3.14194722291e-05 0 -11 11
+9900025:addChannel = 1 0.999968580528 0 -13 13
+9900025:addChannel = 1 0.0 0 -15 15'''
+    )
