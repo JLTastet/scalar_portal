@@ -93,3 +93,35 @@ class ProductionBranchingRatios(BranchingRatios):
     @property
     def maximum_branching_ratio(self):
         return self._max_br
+
+
+class BranchingRatiosResult(object):
+    '''
+    Utility class wrapping the result of a computation of both production and
+    decay branching ratios.
+
+    Aggregates `ProductionBranchingRatios` and `DecayBranchingRatios`, and
+    provides shortcuts for methods related to the scalar particle itself.
+    '''
+    def __init__(self, prod, decay):
+        self._prod  = prod
+        self._decay = decay
+
+    @property
+    def production(self):
+        return self._prod
+
+    @property
+    def decays(self):
+        return self._decay
+
+    @property
+    def total_width(self):
+        return self._decay.total_width
+
+    @property
+    def lifetime_si(self):
+        return self._decay.lifetime_si
+
+    def pythia_particle_string(self, new=True):
+        return self._decay.pythia_particle_string(new)

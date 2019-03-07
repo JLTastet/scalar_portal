@@ -6,6 +6,7 @@ from nose.tools import assert_equals, assert_raises
 import numpy as np
 
 from ..api.model import Model
+from ..api.branching_ratios import BranchingRatiosResult
 from ..data.constants import default_scalar_id
 
 def test_model():
@@ -42,3 +43,11 @@ def test_channels():
         ch.normalized_width(mS)
     for ch in decay_ch:
         ch.normalized_width(mS)
+
+def test_result():
+    m = Model()
+    m.production.enable_all()
+    m.decays.enable('LightScalar')
+    mS = np.array([0.1, 0.5, 1])
+    res = m.compute_branching_ratios(mS, 0.25)
+    assert(isinstance(res, BranchingRatiosResult))

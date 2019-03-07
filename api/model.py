@@ -5,6 +5,7 @@ from __future__ import absolute_import, division
 import numpy as np
 
 from ..api.active_processes import ActiveProcesses
+from ..api.branching_ratios import *
 from ..data.constants import default_scalar_id
 from ..production.two_body_hadronic import TwoBodyHadronic
 from ..decay.leptonic import Leptonic
@@ -157,3 +158,18 @@ class Model(object):
     def scalar_pdg_id(self):
         'The PDG ID for the scalar particle.'
         return self._scalar_id
+
+    def compute_branching_ratios(self, mass, coupling, ignore_invalid=False):
+        '''
+        Compute the production and decay branching ratios of the scalar
+        particle, and return a `BranchingRatiosResult` object containing the
+        result.
+        '''
+        prod_channels  = self._production.get_active_processes()
+        decay_channels = self._decays.get_active_processes()
+        prod_br  = ProductionBranchingRatios(
+            prod_channels , mass, coupling, ignore_invalid, scalar_id=self._scalar_id)
+        decay_br = DecayBranchingRatios(
+            decay_channels, mass, coupling, ignore_invalid, scalar_id=self._scalar_id)
+        res = BranchingRatiosResult(prod_br, decay_br)
+        return res

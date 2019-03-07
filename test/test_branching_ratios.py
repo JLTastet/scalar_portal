@@ -64,3 +64,23 @@ def test_production_branching_ratios():
     br_K2 = br.branching_ratios['B+ -> S K*_2(1430)+']
     maxbr = br.maximum_branching_ratio
     assert_equals(list(br_K2 > br_pi), [True, False])
+
+def test_branching_ratio_result():
+    production_channels = [TwoBodyHadronic('B+', 'pi+'), TwoBodyHadronic('B+', 'K*_2(1430)+')]
+    decay_channels = [Leptonic(l) for l in ['e', 'mu', 'tau']]
+    mS = np.array([0.5, 1.5, 2.5])
+    production_br = ProductionBranchingRatios(production_channels, mS, 1)
+    decay_br = DecayBranchingRatios(decay_channels, mS, 1)
+    res = BranchingRatiosResult(production_br, decay_br)
+    assert(np.all(res.total_width == decay_br.total_width))
+    assert(np.all(res.lifetime_si == decay_br.lifetime_si))
+    assert(res.production is production_br)
+    assert(res.decays     is decay_br     )
+
+def test_result_strings():
+    production_channels = [TwoBodyHadronic('B+', 'pi+'), TwoBodyHadronic('B+', 'K*_2(1430)+')]
+    decay_channels = [Leptonic(l) for l in ['e', 'mu', 'tau']]
+    production_br = ProductionBranchingRatios(production_channels, 0.5, 1)
+    decay_br = DecayBranchingRatios(decay_channels, 0.5, 1)
+    res = BranchingRatiosResult(production_br, decay_br)
+    assert_equals(res.pythia_particle_string(), decay_br.pythia_particle_string())
