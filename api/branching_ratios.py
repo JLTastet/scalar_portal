@@ -89,16 +89,10 @@ class ProductionBranchingRatios(BranchingRatios):
         super(ProductionBranchingRatios, self).__init__(*args, **kwargs)
         self._br = {
             st: w / self._channels[st].parent_width for st, w in viewitems(self._width)}
-        # Ref: https://stackoverflow.com/a/39279912
-        self._max_br = np.fmax.reduce(self._br.values())
 
     @property
     def branching_ratios(self):
         return self._br
-
-    @property
-    def maximum_branching_ratio(self):
-        return self._max_br
 
 
 class BranchingRatiosResult(object):

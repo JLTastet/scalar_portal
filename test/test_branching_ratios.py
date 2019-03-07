@@ -62,7 +62,6 @@ def test_production_branching_ratios():
     br = ProductionBranchingRatios(channels, mS, 1)
     br_pi = br.branching_ratios['B+ -> S pi+'        ]
     br_K2 = br.branching_ratios['B+ -> S K*_2(1430)+']
-    maxbr = br.maximum_branching_ratio
     assert_equals(list(br_K2 > br_pi), [True, False])
 
 def test_branching_ratio_result():
