@@ -140,9 +140,7 @@ class Model(object):
     '''
     def __init__(self, scalar_id=default_scalar_id):
         self._production = ActiveProcesses(_production_channels, _production_groups)
-        self._production.enable_all()
         self._decays = ActiveProcesses(_decay_channels, _decay_groups)
-        self._decays.enable_all()
         self._scalar_id = scalar_id
 
     @property

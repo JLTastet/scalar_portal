@@ -11,15 +11,14 @@ from ..data.constants import default_scalar_id
 def test_model():
     m = Model()
     assert_equals(m.scalar_pdg_id, default_scalar_id)
-    m.decays.disable_all()
     m.decays.enable('LightScalar')
     m.production.disable('K -> S pi')
 
 def test_groups():
     m_ref = Model()
+    m_ref.production.enable_all()
+    m_ref.decays.enable_all()
     m = Model()
-    m.production.disable_all()
-    m.decays.disable_all()
     m.production.enable('K -> S pi')
     m.production.enable('B -> S pi')
     m.production.enable('B -> S K?')
@@ -34,6 +33,8 @@ def test_groups():
 
 def test_channels():
     m = Model()
+    m.production.enable_all()
+    m.decays.enable_all()
     prod_ch  = m.production.get_active_processes()
     decay_ch = m.decays.get_active_processes()
     mS = np.array([0.5, 1.5, 3])
