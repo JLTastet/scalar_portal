@@ -14,14 +14,14 @@ class BranchingRatios(object):
     Represents a set of computed branching ratios.
     '''
     def __init__(self, channels, mass, coupling,
-                 ignore_nan=False,
+                 ignore_invalid=False,
                  scalar_id=default_scalar_id):
         self._channels = {str(ch): ch for ch in channels}
         self._mS = np.asarray(mass, dtype='float')
         self._coupling = np.asarray(coupling, dtype='float')
         self._scalar_id = scalar_id
         self._width = {str(ch): ch.width(mass, coupling) for ch in channels}
-        if ignore_nan:
+        if ignore_invalid:
             for w in self._width.values():
                 w[np.isnan(w)] = 0
 

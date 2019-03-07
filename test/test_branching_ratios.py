@@ -26,11 +26,11 @@ def test_decay_branching_ratios():
     assert_raises(ValueError, lambda: br.pythia_particle_string())
     assert(np.all(np.abs(br.lifetime_si * second * ref_total_width - 1) <= epsilon))
 
-def test_nan_branching_ratio():
+def test_invalid_branching_ratio():
     mS = np.array([0.5, 1.5, 2.5])
     br0 = DecayBranchingRatios([Leptonic('e')             ], mS, 1)
     br1 = DecayBranchingRatios([Leptonic('e'), TwoGluons()], mS, 1)
-    br2 = DecayBranchingRatios([Leptonic('e'), TwoGluons()], mS, 1, ignore_nan=True)
+    br2 = DecayBranchingRatios([Leptonic('e'), TwoGluons()], mS, 1, ignore_invalid=True)
     w0 = br0.total_width
     w1 = br1.total_width
     w2 = br2.total_width
