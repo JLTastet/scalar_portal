@@ -238,7 +238,10 @@ def get_lifetime(particle):
     natural units (GeV⁻¹).
     """
     # NOTE: Only mesons are handled so far.
-    return _get_meson_lifetime(particle)
+    if is_meson(particle):
+        return _get_meson_lifetime(particle)
+    else:
+        raise(ValueError('Operation not supported for {}.'.format(particle)))
 
 def get_spin_code(particle):
     """
@@ -260,19 +263,31 @@ def get_charge(particle):
 
 def get_parity(particle):
     # NOTE: Only mesons are handled so far.
-    return _get_meson_parity(particle)
+    if is_meson(particle):
+        return _get_meson_parity(particle)
+    else:
+        raise(ValueError('Operation not supported for {}.'.format(particle)))
 
 def get_abs_strangeness(particle):
     # NOTE: Only mesons are handled so far.
-    return _get_abs_meson_strangeness(particle)
+    if is_meson(particle):
+        return _get_abs_meson_strangeness(particle)
+    else:
+        raise(ValueError('Operation not supported for {}.'.format(particle)))
 
 def get_abs_charm(particle):
     # NOTE: Only mesons are handled so far.
-    return _get_abs_meson_charm(particle)
+    if is_meson(particle):
+        return _get_abs_meson_charm(particle)
+    else:
+        raise(ValueError('Operation not supported for {}.'.format(particle)))
 
 def get_abs_beauty(particle):
     # NOTE: Only mesons are handled so far.
-    return _get_abs_meson_beauty(particle)
+    if is_meson(particle):
+        return _get_abs_meson_beauty(particle)
+    else:
+        raise(ValueError('Operation not supported for {}.'.format(particle)))
 
 # Quark masses and strong coupling constant
 # -----------------------------------------

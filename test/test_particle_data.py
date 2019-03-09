@@ -53,7 +53,7 @@ def test_get_name():
     assert_equals(get_name(- 100323), 'K*(1410)-'     )
     assert_equals(get_name(-  10313), 'K_1(1270)bar0' )
     assert_equals(get_name(+    315), 'K*_2(1430)0'   )
-    # Non-existent ID
+    assert_raises(ValueError, lambda: get_name( +11))
     assert_raises(ValueError, lambda: get_name(666))
 
 def test_get_mass():
@@ -112,6 +112,7 @@ def test_get_parity():
     assert_equals(get_parity('K_1(1270)bar0'), +1)
     assert_equals(get_parity('K*_2(1430)0'  ), +1)
     assert_equals(get_parity('B'            ), -1)
+    assert_raises(ValueError, lambda: get_parity('Z0'))
 
 def test_quark_quantum_numbers():
     assert_equals(get_abs_strangeness('K*'), 1)
@@ -120,6 +121,9 @@ def test_quark_quantum_numbers():
     assert_equals(get_abs_strangeness('B'), 0)
     assert_equals(get_abs_charm('B')      , 0)
     assert_equals(get_abs_beauty('B')     , 1)
+    assert_raises(ValueError, lambda: get_abs_strangeness('e+'))
+    assert_raises(ValueError, lambda: get_abs_charm(      'e+'))
+    assert_raises(ValueError, lambda: get_abs_beauty(     'e+'))
 
 def test_is_meson():
     assert_equals(is_meson('pi'        ), True)
