@@ -95,6 +95,16 @@ def test_get_spin_code():
     assert_equals(get_spin_code('tau'       ), 2)
     assert_raises(ValueError, lambda: get_spin_code('~Gravitino'))
 
+def test_get_charge():
+    assert_equals(get_charge('K0'   ),  0)
+    assert_equals(get_charge('Kbar0'),  0)
+    assert_equals(get_charge('K+'   ), +1)
+    assert_equals(get_charge('K-'   ), -1)
+    assert_raises(ValueError, lambda: get_charge('K' ))
+    assert_raises(ValueError, lambda: get_charge('e+'))
+    assert_raises(ValueError, lambda: get_charge('Z0'))
+    assert_raises(ValueError, lambda: get_charge('g' ))
+
 def test_get_parity():
     assert_equals(get_parity('K'            ), -1)
     assert_equals(get_parity('K*_0(700)'    ), +1)

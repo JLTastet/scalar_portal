@@ -107,6 +107,17 @@ def _get_meson_spin_code(meson_name):
     record = _get_meson_by_name(meson_name)
     return record.SpinCode
 
+_charges = {
+    '0'   :  0,
+    'bar0':  0,
+    '+'   : +1,
+    '-'   : -1,
+}
+
+def _get_meson_charge(meson_name):
+    _, charge_str = _split_meson_charge(meson_name)
+    return _charges[charge_str]
+
 def _get_meson_parity(meson_name):
     record = _get_meson_by_name(meson_name)
     return record.Parity
@@ -239,6 +250,13 @@ def get_spin_code(particle):
         return _get_meson_spin_code(particle)
     else:
         raise(ValueError('Spin of {} is unknown.'.format(particle)))
+
+def get_charge(particle):
+    # NOTE: Only mesons are handled so far.
+    if is_meson(particle):
+        return _get_meson_charge(particle)
+    else:
+        raise(ValueError('Operation not supported for {}.'.format(particle)))
 
 def get_parity(particle):
     # NOTE: Only mesons are handled so far.
