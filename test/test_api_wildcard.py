@@ -15,3 +15,5 @@ def test_api_wildcard():
     assert('BranchingRatios'           in globals())
     assert('DecayBranchingRatios'      in globals())
     assert('ProductionBranchingRatios' in globals())
+    assert('format_pythia_string'          in globals())
+    assert('format_pythia_particle_string' in globals())
