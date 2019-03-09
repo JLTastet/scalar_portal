@@ -10,6 +10,19 @@ from ..api.channel import Channel
 from ..data.constants import second, c_si, default_scalar_id
 
 
+def format_pythia_particle_string(
+        pdg_id, name, antiname, spin_type, charge_type, mass, lifetime_si,
+        new=True, may_decay=True, is_visible=False):
+    lifetime_mm = 1e3 * lifetime_si * c_si
+    all_prop = '{}:{} = {} {} {} {} 0 {} 0.0 0.0 0.0 {}'.format(
+        pdg_id, 'new' if new else 'all', name, antiname, spin_type, charge_type,
+        mass, lifetime_mm)
+    is_resonance = '{}:isResonance = false'.format(pdg_id)
+    may_decay = '{}:mayDecay = {}'.format(pdg_id, str(may_decay).lower())
+    is_visible = '{}:isVisible = {}'.format(pdg_id, str(is_visible).lower())
+    return '\n'.join([all_prop, is_resonance, may_decay, is_visible])
+
+
 class BranchingRatios(with_metaclass(abc.ABCMeta, object)):
     '''
     Represents a set of computed branching ratios.
@@ -72,13 +85,10 @@ class DecayBranchingRatios(BranchingRatios):
         '''
         if self._mS.ndim > 0:
             raise(ValueError('Can only generate a PYTHIA string for a single scalar mass.'))
-        lifetime_mm = 1e3 * self.lifetime_si * c_si
-        all_prop = '{}:{} = S S 1 0 0 {} 0.0 0.0 0.0 {}'.format(
-            self._scalar_id, 'new' if new else 'all', self._mS, lifetime_mm)
-        is_resonance = '{}:isResonance = false'.format(self._scalar_id)
-        may_decay = '{}:mayDecay = true'.format(self._scalar_id)
-        is_visible = '{}:isVisible = false'.format(self._scalar_id)
-        return '\n'.join([all_prop, is_resonance, may_decay, is_visible])
+        return format_pythia_particle_string(
+            pdg_id=self._scalar_id, name='S', antiname='S', spin_type=1,
+            charge_type=0, mass=self._mS, lifetime_si=self.lifetime_si,
+            new=new, may_decay=True, is_visible=False)
 
 
 class ProductionBranchingRatios(BranchingRatios):
