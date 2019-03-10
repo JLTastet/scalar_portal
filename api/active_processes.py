@@ -4,6 +4,8 @@ from __future__ import absolute_import
 from future.utils import viewitems
 
 from copy import copy
+# We use OrderedDict to obtain stable, deterministic results.
+from collections import OrderedDict
 
 
 class ActiveProcesses(object):
@@ -13,10 +15,10 @@ class ActiveProcesses(object):
     def __init__(self, process_list, process_groups=dict(), default_selection=[]):
         # Shallow copy because processes are immutable
         self._process_list = copy(process_list)
-        self._process_dict = {str(process): process for process in process_list}
+        self._process_dict = OrderedDict((str(process), process) for process in process_list)
         # Similarly, process groups are immutable `frozenset`'s
         self._process_groups = process_groups
-        all_process_groups = {str(process): None for process in process_list}
+        all_process_groups = OrderedDict((str(process), None) for process in process_list)
         all_process_groups.update(process_groups)
         all_process_groups.update({'All': self._process_dict.keys()})
         self._all_process_groups = all_process_groups
@@ -73,6 +75,9 @@ class ActiveProcesses(object):
         'List all available groups of processes.'
         return list(self._process_groups)
 
-    def get_active_processes(self):
+    def get_active_processes(self, sorted=True):
         'Return the `Channel` objects for all active processes.'
-        return [self._process_dict[ch] for ch in self._active]
+        lst = [self._process_dict[ch] for ch in self._active]
+        if sorted:
+            lst.sort()
+        return lst

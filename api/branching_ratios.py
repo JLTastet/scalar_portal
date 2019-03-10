@@ -4,6 +4,9 @@ from __future__ import absolute_import, division
 from future.utils import viewitems, with_metaclass
 import abc # Abstract Base Classes
 
+# We use OrderedDict to obtain stable, deterministic results, and to make sure
+# particle definitions always come before decay channel ones.
+from collections import OrderedDict
 import numpy as np
 
 from ..api.channel import Channel
@@ -30,11 +33,11 @@ class BranchingRatios(with_metaclass(abc.ABCMeta, object)):
     def __init__(self, channels, mass, coupling,
                  ignore_invalid=False,
                  scalar_id=default_scalar_id):
-        self._channels = {str(ch): ch for ch in channels}
+        self._channels = OrderedDict((str(ch), ch) for ch in channels)
         self._mS = np.asarray(mass, dtype='float')
         self._coupling = np.asarray(coupling, dtype='float')
         self._scalar_id = scalar_id
-        self._width = {str(ch): ch.width(mass, coupling) for ch in channels}
+        self._width = OrderedDict((str(ch), ch.width(mass, coupling)) for ch in channels)
         if ignore_invalid:
             for w in self._width.values():
                 w[np.isnan(w)] = 0
@@ -51,8 +54,8 @@ class BranchingRatios(with_metaclass(abc.ABCMeta, object)):
     def pythia_strings(self):
         if self._mS.ndim > 0 or self._coupling.ndim > 0:
             raise(ValueError('Can only generate PYTHIA strings for a single mass and coupling.'))
-        return {ch_str: channel.pythia_string(self.branching_ratios[ch_str], self._scalar_id)
-                for ch_str, channel in viewitems(self._channels)}
+        return OrderedDict((ch_str, channel.pythia_string(self.branching_ratios[ch_str], self._scalar_id))
+                for ch_str, channel in viewitems(self._channels))
 
 
 class DecayBranchingRatios(BranchingRatios):
@@ -62,8 +65,8 @@ class DecayBranchingRatios(BranchingRatios):
     def __init__(self, *args, **kwargs):
         super(DecayBranchingRatios, self).__init__(*args, **kwargs)
         self._total_width = sum(self._width.values())
-        self._br = {
-            ch_str: w / self._total_width for ch_str, w in viewitems(self._width)}
+        self._br = OrderedDict(
+            (ch_str, w / self._total_width) for ch_str, w in viewitems(self._width))
 
     @property
     def total_width(self):
@@ -97,8 +100,8 @@ class ProductionBranchingRatios(BranchingRatios):
     '''
     def __init__(self, *args, **kwargs):
         super(ProductionBranchingRatios, self).__init__(*args, **kwargs)
-        self._br = {
-            st: w / self._channels[st].parent_width for st, w in viewitems(self._width)}
+        self._br = OrderedDict(
+            (st, w / self._channels[st].parent_width) for st, w in viewitems(self._width))
 
     @property
     def branching_ratios(self):
