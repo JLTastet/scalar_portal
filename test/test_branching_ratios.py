@@ -94,3 +94,7 @@ def test_result_strings():
 9900025:addChannel = 1 0.999968580528 0 -13 13
 9900025:addChannel = 1 0.0 0 -15 15'''
     )
+
+def test_invalid():
+    br = DecayBranchingRatios([TwoGluons()], 1.5, 1)
+    assert_raises(ValueError, lambda: br.pythia_strings())

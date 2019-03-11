@@ -54,6 +54,9 @@ class BranchingRatios(with_metaclass(abc.ABCMeta, object)):
     def pythia_strings(self):
         if self._mS.ndim > 0 or self._coupling.ndim > 0:
             raise(ValueError('Can only generate PYTHIA strings for a single mass and coupling.'))
+        for ch, br in viewitems(self.branching_ratios):
+            if not np.isfinite(br):
+                raise(ValueError('Cannot generate PYTHIA string: invalid channel {} for m = {}.'.format(ch, self._mS)))
         return OrderedDict((ch_str, channel.pythia_string(self.branching_ratios[ch_str], self._scalar_id))
                 for ch_str, channel in viewitems(self._channels))
 
