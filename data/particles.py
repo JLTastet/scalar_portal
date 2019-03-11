@@ -40,6 +40,9 @@ def _split_meson_charge(meson_name):
     return qcd_state, charge
 
 def _get_meson_by_name(meson_name):
+    # Special case for neutral kaons
+    if meson_name in ['K_S0', 'K_L0']:
+        return _get_meson_by_name('K')
     try:
         # Handle mesons specified without the electric charge (e.g. `K*`)
         return _get_meson('Name', meson_name)

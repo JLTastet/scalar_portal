@@ -87,6 +87,7 @@ def test_get_lifetime():
 
 def test_get_spin_code():
     assert_equals(get_spin_code('pi+'       ), 1)
+    assert_equals(get_spin_code('K_L0'      ), 1)
     assert_equals(get_spin_code('K*_0(1430)'), 1)
     assert_equals(get_spin_code('K*(1410)-' ), 3)
     assert_equals(get_spin_code('K*_2(1430)'), 5)
@@ -97,6 +98,7 @@ def test_get_spin_code():
 
 def test_get_charge():
     assert_equals(get_charge('K0'   ),  0)
+    assert_equals(get_charge('K_S0' ),  0)
     assert_equals(get_charge('Kbar0'),  0)
     assert_equals(get_charge('K+'   ), +1)
     assert_equals(get_charge('K-'   ), -1)
