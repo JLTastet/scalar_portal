@@ -92,7 +92,7 @@ class DecayBranchingRatios(BranchingRatios):
         if self._mS.ndim > 0:
             raise(ValueError('Can only generate a PYTHIA string for a single scalar mass.'))
         return format_pythia_particle_string(
-            pdg_id=self._scalar_id, name='S', antiname='S', spin_type=1,
+            pdg_id=self._scalar_id, name='S', antiname='void', spin_type=1,
             charge_type=0, mass=self._mS, lifetime_si=self.lifetime_si,
             new=new, may_decay=True, is_visible=False)
 

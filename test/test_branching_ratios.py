@@ -46,12 +46,12 @@ def test_decay_pythia_strings():
     assert_equals(strings['S -> mu+ mu-'  ], '9900025:addChannel = 1 0.999968580528 0 -13 13'   )
     assert_equals(strings['S -> tau+ tau-'], '9900025:addChannel = 1 0.0 0 -15 15'              )
     assert_equals(br.pythia_particle_string(),
-                  '9900025:new = S S 1 0 0 0.5 0.0 0.0 0.0 7.22250988672e-05\n' +
+                  '9900025:new = S void 1 0 0 0.5 0.0 0.0 0.0 7.22250988672e-05\n' +
                   '9900025:isResonance = false\n' +
                   '9900025:mayDecay = true\n' +
                   '9900025:isVisible = false')
     assert_equals(br.pythia_particle_string(new=False),
-                  '9900025:all = S S 1 0 0 0.5 0.0 0.0 0.0 7.22250988672e-05\n' +
+                  '9900025:all = S void 1 0 0 0.5 0.0 0.0 0.0 7.22250988672e-05\n' +
                   '9900025:isResonance = false\n' +
                   '9900025:mayDecay = true\n' +
                   '9900025:isVisible = false')
@@ -84,7 +84,7 @@ def test_result_strings():
     res = BranchingRatiosResult(production_br, decay_br)
     assert_equals(res.pythia_particle_string(), decay_br.pythia_particle_string())
     assert_equals(res.pythia_full_string(), '''\
-9900025:new = S S 1 0 0 0.5 0.0 0.0 0.0 7.22250988672e-05
+9900025:new = S void 1 0 0 0.5 0.0 0.0 0.0 7.22250988672e-05
 9900025:isResonance = false
 9900025:mayDecay = true
 9900025:isVisible = false
