@@ -7,52 +7,38 @@ import os
 import numpy as np
 import scipy.interpolate as si
 
-from . import leptonic as lp
 from ..api.channel import DecayChannel
 
 
 _srcdir = os.path.dirname(__file__)
-# Load the table containing the Br(S -> pi pi) / Br(S -> mu+ mu-) ratio.
-#   Source: J. F. Donoghue, J. Gasser and H. Leutwyler, The Decay of a Light Higgs Boson,
-#           Nucl. Phys. B343 (1990) 341
-#   Extracted from Fig. 6.
+# Load the table containing the normalized S -> π π decay width.
+#   Source:
+#       Winkler, M.W., 2019.
+#       Decay and Detection of a Light Scalar Boson Mixing with the Higgs.
+#       Physical Review D 99. https://doi.org/10.1103/PhysRevD.99.015018
 #   First column: scalar mass m_S in GeV.
-#   Second column: Br(S -> pi pi) / Br(S -> mu+ mu-) ratio evaluated at m_S.
+#   Second column: Γ(S -> π π) ratio evaluated at m_S.
 #   Note: The first column should not be assumed to be increasing.
-_pi_mu_ratio_table = np.loadtxt(os.path.join(_srcdir, 'pion_to_muon_ratio.dat'))
-# The calculation is not valid above 1 GeV, so we return NaN above this value.
-_upper_lim = 1.0 # GeV
-_upper_idx = np.argmax(_pi_mu_ratio_table[:,0] >= _upper_lim)
+_decay_width_table = np.loadtxt(os.path.join(_srcdir, 'winkler_pi.txt'))
+# The calculation is not valid above 2.0 GeV, so we return NaN above this value.
+_upper_lim = 2.0 # GeV
 # Make sure the upper limit makes sense
-assert(_upper_idx != 0)
-assert(_upper_lim <= _pi_mu_ratio_table[-1,0])
+assert(np.max(_decay_width_table[:,0]) >= _upper_lim)
 
-# FIXME: requires SciPy >= 0.17.0
-# _pi_mu_ratio = si.interp1d(
-#     _pi_mu_ratio_table[0:_upper_idx,0], _pi_mu_ratio_table[0:_upper_idx,1],
-#     kind='cubic',
-#     bounds_error=False,
-#     fill_value=(0., float('nan')),
-#     assume_sorted=False
-# )
-
-# FIXME: workaround for SciPy 0.15.1
+# Workaround for SciPy 0.15.1
 _itp = si.interp1d(
-    _pi_mu_ratio_table[0:_upper_idx+1,0], _pi_mu_ratio_table[0:_upper_idx+1,1],
+    _decay_width_table[:,0], _decay_width_table[:,1],
     kind='linear',
     bounds_error=False,
     fill_value=0.,
     assume_sorted=False
 )
-def _pi_mu_ratio(mS):
-    return np.where(mS <= _upper_lim, _itp(mS), float('nan'))
 
 def _normalized_total_decay_width(mS):
     """
     Total decay width Γ(S → π π) = Γ(S → π⁰ π⁰) + Γ(S → π⁺ π⁻).
     """
-    dimuon_width = lp.normalized_decay_width('mu', mS)
-    return dimuon_width * _pi_mu_ratio(mS)
+    return np.where(mS <= _upper_lim, _itp(mS), float('nan'))
 
 def normalized_decay_width(final_state, mS):
     """

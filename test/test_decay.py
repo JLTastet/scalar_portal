@@ -38,15 +38,15 @@ def test_leptonic_width():
     assert_raises(ValueError, lambda: lp.normalized_decay_width('K', mS))
 
 def test_two_pion_width():
-    mS = np.array([0.01, 0.1, 0.2, 0.3, 0.5, 0.8, 1.0, 1.2, 2.0, 4.0, 10.0])
+    mS = np.array([0.01, 0.2, 0.3, 0.5, 0.9, 1.0, 1.5, 2.0, 2.5, 4.0, 10.0])
     wn = tp.normalized_decay_width('neutral', mS)
     assert(all(wn[mS < 2*get_mass('pi')]) == 0)
-    assert(all(wn[np.logical_and(mS > 2*get_mass('pi'), mS < 1.0)]) > 0)
-    assert(all(np.isnan(wn[mS > 1.0])))
+    assert(all(wn[np.logical_and(mS > 2*get_mass('pi'), mS <= 2.0)]) > 0)
+    assert(all(np.isnan(wn[mS > 2.0])))
     wc = tp.normalized_decay_width('charged', mS)
     assert(all(wc[mS < 2*get_mass('pi')]) == 0)
-    assert(all(wc[np.logical_and(mS > 2*get_mass('pi'), mS < 1.0)]) > 0)
-    assert(all(np.isnan(wc[mS > 1.0])))
+    assert(all(wc[np.logical_and(mS > 2*get_mass('pi'), mS <= 2.0)]) > 0)
+    assert(all(np.isnan(wc[mS > 2.0])))
     # Now test that Γ(S -> pi+ pi-) = 2 Γ(S -> pi0 pi0)
     eps = 1e-12
     finite = np.isfinite(wn)
@@ -55,19 +55,24 @@ def test_two_pion_width():
     # To test the numerical values, we use the masses at the interpolation knots.
     # This way, the different interpolations between scipy and Mathematica do not
     # introduce an additional error.
-    mS_precise = np.array([0.3934299772377165, 0.7008357666750972, 0.9969868714505782])
-    w = tp.normalized_decay_width('charged', mS_precise)
+    mS = np.array([
+        0.2808915847265062, 0.5011797711548195, 1.0036678784980348,
+        1.4995286492412911, 1.9618148657454992])
+    w = tp.normalized_decay_width('charged', mS)
     target = np.array([
-        9.131368964469796e-9, 4.948045885831599e-8, 9.521085542274886e-7])
+        4.880143779482717e-10, 1.4857373356991338e-8, 3.604336514028455e-7,
+        2.319233832129673e-9, 2.310540370746613e-9])
     assert(np.all(np.abs(w - target) <= eps * target))
     # Test masses away from the interpolation knots.
     # If using linear interpolation, we actually expect the same result as the
     # Mathematica version.
     eps = 1e-12
+    mS = np.array([0.2, 0.3, 0.5, 1.0, 1.4, 2.0])
+    w = tp.normalized_decay_width('charged', mS)
     target = np.array([
-        0, 0, 0, 2.4299966755579365e-9, 1.92145326982196e-8,
-        7.959362839919174e-8, 8.801586892729695e-07])
-    assert(np.all(np.abs(wc[mS <= 1.0] - target) <= eps * target))
+        0, 1.8927616589680657e-9, 1.475091932044681e-8, 4.019482951592148e-7,
+        6.6426603227451354e-9, 2.39245459053496e-9])
+    assert(np.all(np.abs(w - target) <= eps * target))
 
 def test_two_gluon_width():
     mS = np.array([0.01, 0.1, 0.5, 1.0, 2.0, 4.0, 10.0])
