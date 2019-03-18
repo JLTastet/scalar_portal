@@ -40,12 +40,12 @@ def test_leptonic_width():
 def test_two_pion_width():
     mS = np.array([0.01, 0.2, 0.3, 0.5, 0.9, 1.0, 1.5, 2.0, 2.5, 4.0, 10.0])
     wn = tp.normalized_decay_width('neutral', mS)
-    assert(all(wn[mS < 2*get_mass('pi')]) == 0)
-    assert(all(wn[np.logical_and(mS > 2*get_mass('pi'), mS <= 2.0)]) > 0)
+    assert(all(wn[mS < 2*get_mass('pi')] == 0))
+    assert(all(wn[(mS > 2*get_mass('pi')) & (mS <= 2.0)] > 0))
     assert(all(np.isnan(wn[mS > 2.0])))
     wc = tp.normalized_decay_width('charged', mS)
-    assert(all(wc[mS < 2*get_mass('pi')]) == 0)
-    assert(all(wc[np.logical_and(mS > 2*get_mass('pi'), mS <= 2.0)]) > 0)
+    assert(all(wc[mS < 2*get_mass('pi')] == 0))
+    assert(all(wc[(mS > 2*get_mass('pi')) & (mS <= 2.0)] > 0))
     assert(all(np.isnan(wc[mS > 2.0])))
     # Now test that Γ(S -> pi+ pi-) = 2 Γ(S -> pi0 pi0)
     eps = 1e-12
