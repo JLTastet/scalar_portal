@@ -9,6 +9,7 @@ from ..api import channel as ch
 from ..production import two_body_hadronic as hh
 from ..decay import leptonic as lp
 from ..decay import two_pions as pi
+from ..decay import two_kaons as kk
 from ..decay import two_gluons as gg
 from ..decay import two_quarks as qq
 
@@ -45,6 +46,22 @@ def test_two_pions():
     assert_equals(ch0.pythia_string(0.42, 9900025), '9900025:addChannel = 1 0.42 0 111 111' )
     assert_equals(ch1.pythia_string(0.42, 9900025), '9900025:addChannel = 1 0.42 0 211 -211')
     assert_raises(ValueError, lambda: pi.TwoPions('pi0 pi0'))
+
+def test_two_kaons():
+    ch0 = kk.TwoKaons('neutral')
+    ch1 = kk.TwoKaons('charged')
+    mS = np.array([0.9, 1, 1.4, 2])
+    assert(np.all(ch0.normalized_width(mS) == kk.normalized_decay_width(mS)))
+    # The widths should be equal since we use the same mass for K0 and K+.
+    assert(np.all(ch0.normalized_width(mS) == ch1.normalized_width(mS)))
+    assert(np.all(ch0.is_open(mS) == [False, True, True, True]))
+    assert(np.all(ch0.is_valid(mS)))
+    assert(np.all(~ch0.is_valid([2.5, 5])))
+    assert_equals(str(ch0), 'S -> K0 Kbar0')
+    assert_equals(str(ch1), 'S -> K+ K-'   )
+    assert_equals(ch0.pythia_string(0.42, 9900025), '9900025:addChannel = 1 0.42 0 311 -311')
+    assert_equals(ch1.pythia_string(0.42, 9900025), '9900025:addChannel = 1 0.42 0 321 -321')
+    assert_raises(ValueError, lambda: kk.TwoKaons('K+ K-'))
 
 def test_two_gluons():
     ch = gg.TwoGluons()

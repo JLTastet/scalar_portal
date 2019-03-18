@@ -8,6 +8,7 @@ import numpy as np
 from ..data.particles import *
 from ..decay import leptonic as lp
 from ..decay import two_pions as tp
+from ..decay import two_kaons as kk
 from ..decay import two_gluons as gg
 from ..decay import two_quarks as qq
 
@@ -72,6 +73,27 @@ def test_two_pion_width():
     target = np.array([
         0, 1.8927616589680657e-9, 1.475091932044681e-8, 4.019482951592148e-7,
         6.6426603227451354e-9, 2.39245459053496e-9])
+    assert(np.all(np.abs(w - target) <= eps * target))
+
+def test_two_kaon_width():
+    mS = np.array([0.01, 0.2, 0.3, 0.5, 0.9, 1.0, 1.5, 2.0, 2.5, 4.0, 10.0])
+    w = kk.normalized_decay_width(mS)
+    assert(np.all(w[ mS < 2*get_mass('K')               ] == 0))
+    assert(np.all(w[(mS > 2*get_mass('K')) & (mS <= 2.0)] >  0))
+    assert(np.all(np.isnan(w[mS > 2.0])))
+    # Test numerical values at the interpolation knots.
+    eps = 1e-12
+    mS = np.array([1.0029956973063714, 1.5221480119166657, 1.992527315035567])
+    w = kk.normalized_decay_width(mS)
+    target = np.array([
+        5.3034678644569654e-8, 4.121879878937285e-8, 1.7589704763603936e-8])
+    assert(np.all(np.abs(w - target) <= eps * target))
+    # Test masses away from the interpolation knots.
+    eps = 1e-12 # For linear interpolation, we can use a small ε
+    mS = np.array([0.9, 1.0, 1.4, 2.0])
+    w = kk.normalized_decay_width(mS)
+    target = np.array([
+        0, 3.25398123949564e-8, 4.558339609849428e-8, 1.743794584685908e-8])
     assert(np.all(np.abs(w - target) <= eps * target))
 
 def test_two_gluon_width():
