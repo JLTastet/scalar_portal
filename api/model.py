@@ -10,6 +10,8 @@ from ..data.constants import default_scalar_id
 from ..production.two_body_hadronic import TwoBodyHadronic
 from ..decay.leptonic import Leptonic
 from ..decay.two_pions import TwoPions
+from ..decay.two_kaons import TwoKaons
+from ..decay.multimeson import Multimeson
 from ..decay.two_gluons import TwoGluons
 from ..decay.two_quarks import TwoQuarks
 
@@ -105,6 +107,9 @@ _decay_channels = [
     Leptonic('tau'),     # S -> tau+ tau-
     TwoPions('neutral'), # S -> pi0 pi0
     TwoPions('charged'), # S -> pi+ pi-
+    TwoKaons('neutral'), # S -> K0 Kbar0
+    TwoKaons('charged'), # S -> K+ K-
+    Multimeson(),        # S -> 4π, ηη, ρρ, …
     TwoGluons(),         # S -> g g
     TwoQuarks('s'),      # S -> s sbar
     TwoQuarks('c'),      # S -> c cbar
@@ -115,12 +120,15 @@ _decay_groups = {
     'S -> l+ l-' : ['S -> e+ e-'  , 'S -> mu+ mu-' , 'S -> tau+ tau-'],
     # Decays to pions
     'S -> pi pi' : ['S -> pi0 pi0', 'S -> pi+ pi-'],
+    # Decays to kaons
+    'S -> K K'   : ['S -> K0 Kbar0', 'S -> K+ K-' ],
     # Decays to heavy quarks
     'S -> q qbar': ['S -> s sbar' , 'S -> c cbar' ],
     # All hard QCD processes, which subsequently shower and hadronize
     'HardQCD'    : ['S -> g g'    , 'S -> q qbar' ],
-    # All valid and relevant processes below 1 GeV
-    'LightScalar': ['S -> e+ e-'  , 'S -> mu+ mu-' , 'S -> pi pi'    ],
+    # All valid and relevant processes below 2 GeV
+    'LightScalar': ['S -> e+ e-'  , 'S -> mu+ mu-' , 'S -> pi pi', 'S -> K K',
+                    'S -> mesons...'],
     # All valid and relevant processes above 2 GeV
     'HeavyScalar': ['S -> l+ l-'  , 'HardQCD'     ],
 }
