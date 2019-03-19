@@ -34,7 +34,7 @@ _itp = si.interp1d(
     assume_sorted=False
 )
 
-def _normalized_total_decay_width(mS):
+def normalized_total_width(mS):
     """
     Total decay width Γ(S → K K) = Γ(S → K⁰ Kbar⁰) + Γ(S → K⁺ K⁻).
     """
@@ -46,7 +46,7 @@ def normalized_decay_width(mS):
         Γ(S → K⁰ Kbar⁰) = 1/2×Γ(S → K K)
         Γ(S → K⁺ K⁻   ) = 1/2×Γ(S → K K)
     """
-    return (1/2) * _normalized_total_decay_width(np.asarray(mS, dtype='float'))
+    return (1/2) * normalized_total_width(np.asarray(mS, dtype='float'))
 
 class TwoKaons(DecayChannel):
     '''

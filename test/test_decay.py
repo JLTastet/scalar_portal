@@ -9,6 +9,7 @@ from ..data.particles import *
 from ..decay import leptonic as lp
 from ..decay import two_pions as tp
 from ..decay import two_kaons as kk
+from ..decay import multimeson as mm
 from ..decay import two_gluons as gg
 from ..decay import two_quarks as qq
 
@@ -94,6 +95,32 @@ def test_two_kaon_width():
     w = kk.normalized_decay_width(mS)
     target = np.array([
         0, 3.25398123949564e-8, 4.558339609849428e-8, 1.743794584685908e-8])
+    assert(np.all(np.abs(w - target) <= eps * target))
+
+def test_multimeson():
+    threshold = 4 * get_mass('pi')
+    assert_equals(mm.normalized_decay_width(threshold), 0)
+    Lambda_S = 2.0
+    eps = 1e-14
+    total_width_below = (
+        tp.normalized_decay_width('neutral', Lambda_S) +
+        tp.normalized_decay_width('charged', Lambda_S) +
+        kk.normalized_decay_width(Lambda_S) * 2 +
+        mm.normalized_decay_width(Lambda_S)
+    )
+    total_width_above = (
+        gg.normalized_decay_width(Lambda_S) +
+        qq.normalized_decay_width('s', Lambda_S) +
+        qq.normalized_decay_width('c', Lambda_S)
+    )
+    assert(abs(total_width_below - total_width_above) <= eps * total_width_above)
+    mS = np.array([0.1, 0.5, 0.6, 1, 1.4, 1.7, 2])
+    w = mm.normalized_decay_width(mS)
+    assert(np.all(mm.normalized_total_width(mS) == w))
+    eps = 1e-8
+    target = np.array([
+        0, 0, 9.444526857355288e-10, 8.981725642908731e-9,
+        2.711286641711554e-8, 4.993756076043946e-8, 8.261294432080519e-8])
     assert(np.all(np.abs(w - target) <= eps * target))
 
 def test_two_gluon_width():

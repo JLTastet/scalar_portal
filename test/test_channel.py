@@ -10,6 +10,7 @@ from ..production import two_body_hadronic as hh
 from ..decay import leptonic as lp
 from ..decay import two_pions as pi
 from ..decay import two_kaons as kk
+from ..decay import multimeson as mm
 from ..decay import two_gluons as gg
 from ..decay import two_quarks as qq
 
@@ -62,6 +63,16 @@ def test_two_kaons():
     assert_equals(ch0.pythia_string(0.42, 9900025), '9900025:addChannel = 1 0.42 0 311 -311')
     assert_equals(ch1.pythia_string(0.42, 9900025), '9900025:addChannel = 1 0.42 0 321 -321')
     assert_raises(ValueError, lambda: kk.TwoKaons('K+ K-'))
+
+def test_multimeson():
+    ch = mm.Multimeson()
+    mS = np.array([0, 0.5, 0.6, 1, 1.4, 1.7, 2])
+    assert(np.all(ch.normalized_width(mS) == mm.normalized_decay_width(mS)))
+    assert(np.all(ch.is_open(mS) == [False, False, True, True, True, True, True]))
+    assert(np.all(ch.is_valid(mS)))
+    assert(np.all(~ch.is_valid([2.5, 4])))
+    assert_equals(str(ch), 'S -> mesons...')
+    assert_equals(ch.pythia_string(0.42, 9900025), None)
 
 def test_two_gluons():
     ch = gg.TwoGluons()

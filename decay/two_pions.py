@@ -34,7 +34,7 @@ _itp = si.interp1d(
     assume_sorted=False
 )
 
-def _normalized_total_decay_width(mS):
+def normalized_total_width(mS):
     """
     Total decay width Γ(S → π π) = Γ(S → π⁰ π⁰) + Γ(S → π⁺ π⁻).
     """
@@ -53,7 +53,7 @@ def normalized_decay_width(final_state, mS):
         fraction = 2/3
     else:
         raise(ValueError('Unknown final state {}.'.format(final_state)))
-    return fraction * _normalized_total_decay_width(np.asarray(mS, dtype='float'))
+    return fraction * normalized_total_width(np.asarray(mS, dtype='float'))
 
 
 class TwoPions(DecayChannel):

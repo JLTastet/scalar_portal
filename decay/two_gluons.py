@@ -70,6 +70,9 @@ def normalized_decay_width(mS):
             * (mS[valid]**3/(8*pi*v**2)) * (1 + mt**2/(16*v**2*pi**2))
     return w
 
+def normalized_total_width(mS):
+    return normalized_decay_width(mS)
+
 
 class TwoGluons(DecayChannel):
     '''

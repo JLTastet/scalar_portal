@@ -110,6 +110,9 @@ def normalized_decay_width(q, mS):
         w[open_channels] = np.fmin(w_large_mass, w_threshold)
     return w
 
+def normalized_total_width(mS):
+    return sum(normalized_decay_width(q, mS) for q in ['s', 'c'])
+
 
 class TwoQuarks(DecayChannel):
     '''
