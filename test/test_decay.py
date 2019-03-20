@@ -119,8 +119,8 @@ def test_multimeson():
     assert(np.all(mm.normalized_total_width(mS) == w))
     eps = 1e-8
     target = np.array([
-        0, 0, 9.444526857355288e-10, 8.981725642908731e-9,
-        2.711286641711554e-8, 4.993756076043946e-8, 8.261294432080519e-8])
+        0, 0, 6.842325342810394e-10, 6.507037347327064e-9,
+        1.9642598915115103e-8, 3.6178523573490095e-8, 5.985102812537482e-8])
     assert(np.all(np.abs(w - target) <= eps * target))
 
 def test_two_gluon_width():
@@ -145,39 +145,19 @@ def test_two_quark_width():
     assert(np.all(np.isnan(w[~valid])))
     eps = 1e-8
     target = np.array([
-        6.76124578665207e-8, 7.427821148146254e-8, 8.292873563795307e-8,
-        9.195446037707259e-8, 1.3592134596330357e-7])
+        4.485054167109034e-8, 6.273213385478923e-8, 7.557563898011938e-8,
+        8.669975909774289e-8, 1.339576192802357e-7])
     assert(np.all(np.abs(w[valid] - target) <= eps * target))
     # Test the range of validity of the formula for S -> c cbar.
     w = qq.normalized_decay_width('c', mS)
     assert(np.all(w[valid & (mS > 2*get_mass('D'))] > 0))
     assert(np.all(np.isnan(w[~valid])))
-    # Test S -> c cbar near the threshold.
-    mS = np.array([3.75, 4, 4.5, 5, 10])
+    # Test S -> c cbar, both near and away from the physical threshold.
+    mS = np.array([3.5, 3.75, 4, 4.5, 5, 10])
     w = qq.normalized_decay_width('c', mS)
     eps = 1e-8
     target = np.array([
-        5.745753285992689e-6, 7.521215316538118e-6, 9.090351049835501e-6,
-        0.000010189686857190758, 0.00001780299310120903])
+        0, 8.653439606661616e-9, 5.215462624791676e-7, 2.071975664654039e-6,
+        3.6864436285061025e-6, 0.000014785007585122307])
     assert(np.all(np.abs(w - target) <= eps * target))
-    # Test QCD corrections
-    beta = np.array([0.01, 0.1, 0.3, 0.5, 0.7, 0.9, 0.99])
-    eps = 1e-13
-    target = np.array([
-        492.5263641647134, 48.6432489800492, 15.641285460481056,
-        8.300452608332847, 4.022675132174538, -0.44454292663622885,
-        -5.426657197539063])
-    assert(np.all(np.abs(qq._Delta_H(beta) - target) <= eps * np.abs(target)))
     assert_raises(ValueError, lambda: qq.normalized_decay_width('b', mS))
-
-def test_dilogarithm():
-    y = np.array([-1000, -100, -10, -1, -0.8, -0.6, -0.4, -0.2, 0, 0.2, 0.4, 0.6, 0.8, 1])
-    eps = 1e-14
-    target = np.array([
-        -25.502475813889966,-12.23875517731494,-4.198277886858104,
-        -0.8224670334241132, -0.6797815878346812, -0.5281071740446666,
-        -0.3658325775124496, -0.1908001377775357, 0., 0.21100377543970492,
-        0.4492829744712819, 0.7275863077163336, 1.0747946000082484,
-        1.6449340668482264])
-    # Since the target can be negative, we need to take its absolute value.
-    assert(np.all(np.abs(qq.Li2(y) - target) <= eps * np.abs(target)))
