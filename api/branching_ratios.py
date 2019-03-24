@@ -72,8 +72,9 @@ class DecayBranchingRatios(BranchingRatios):
     def __init__(self, *args, **kwargs):
         super(DecayBranchingRatios, self).__init__(*args, **kwargs)
         self._total_width = sum(self._width.values())
-        self._br = OrderedDict(
-            (ch_str, w / self._total_width) for ch_str, w in viewitems(self._width))
+        with np.errstate(invalid='ignore'):
+            self._br = OrderedDict(
+                (ch_str, w / self._total_width) for ch_str, w in viewitems(self._width))
 
     @property
     def total_width(self):
