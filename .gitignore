@@ -1,3 +1,4 @@
 *.pyc
 coverage-html
 .coverage
+plots
