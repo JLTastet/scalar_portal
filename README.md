@@ -1,5 +1,8 @@
 # Scalar Portal
 
+[![Build Status](https://travis-ci.org/JLTastet/scalar_portal.svg?branch=master)](https://travis-ci.org/JLTastet/scalar_portal)
+[![codecov.io](http://codecov.io/github/JLTastet/scalar_portal/coverage.svg?branch=master)](http://codecov.io/github/JLTastet/scalar_portal?branch=master)
+
 This package implements the main production and decay channels of a light (GeV-scale) Higgs-like scalar in a beam-dump setup.
 
 ### Known issues
