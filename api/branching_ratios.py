@@ -57,12 +57,9 @@ class BranchingRatios(with_metaclass(abc.ABCMeta, object)):
         for ch, br in viewitems(self.branching_ratios):
             if not np.isfinite(br):
                 raise(ValueError('Cannot generate PYTHIA string: invalid channel {} for m = {}.'.format(ch, self._mS)))
-        strs = OrderedDict()
-        for ch_str, channel in viewitems(self._channels):
-            ps = channel.pythia_string(self.branching_ratios[ch_str], self._scalar_id)
-            if ps is not None:
-                strs[ch_str] = ps
-        return strs
+        return OrderedDict(
+            (ch_str, channel.pythia_string(self.branching_ratios[ch_str], self._scalar_id))
+            for ch_str, channel in viewitems(self._channels))
 
 
 class DecayBranchingRatios(BranchingRatios):
@@ -152,5 +149,7 @@ class BranchingRatiosResult(object):
         production_strs = self.production.pythia_strings()
         decay_strs = self.decays.pythia_strings()
         full_string = '\n'.join(
-            [particle_str] + list(production_strs.values()) + list(decay_strs.values()))
+            [particle_str] +
+            list(st for st in production_strs.values() if st is not None) +
+            list(st for st in decay_strs.values()      if st is not None))
         return full_string
