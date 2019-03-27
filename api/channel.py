@@ -30,6 +30,16 @@ def format_pythia_string(parent_id, children_ids, branching_ratio, matrix_elemen
         parent_id, branching_ratio, matrix_element,
         ' '.join(str(child_id) for child_id in children_ids))
 
+def _safe_get_pdg_id(particle):
+    '''
+    If the PDG code of the particle is known, return it. Otherwise, make a new
+    "unique" code of the form 99xxxxx.
+    '''
+    try:
+        return get_pdg_id(particle)
+    except ValueError:
+        return 9900000 + (hash(particle) % 100000)
+
 
 class Channel(with_metaclass(abc.ABCMeta, object)):
     '''
@@ -43,6 +53,15 @@ class Channel(with_metaclass(abc.ABCMeta, object)):
 
     def __str__(self):
         return _to_channel_str(self._parent, self._children)
+
+    def __lt__(self, other):
+        if self._parent != other._parent:
+            return _safe_get_pdg_id(self._parent) < _safe_get_pdg_id(other._parent)
+        else:
+            for child, other_child in zip(self._children, other._children):
+                if child != other_child:
+                    return _safe_get_pdg_id(child) < _safe_get_pdg_id(other_child)
+        return False # a == b, so a < b returns False
 
     @abc.abstractmethod
     def is_open(self, mS):

@@ -21,6 +21,13 @@ def test_string():
     assert_raises(ValueError, lambda: ch._from_channel_str('e+ e- -> t tbar'))
     assert_raises(ValueError, lambda: ch._from_channel_str('B -> S K* -> S K gamma'))
 
+def test_lt():
+    assert(lp.Leptonic('mu') < lp.Leptonic('e'))
+    assert(not (lp.Leptonic('e') < lp.Leptonic('e')))
+    assert(hh.TwoBodyHadronic('B0', 'K0') < hh.TwoBodyHadronic('B+', 'K+'))
+    assert(not (hh.TwoBodyHadronic('B+', 'K+') < hh.TwoBodyHadronic('B0', 'K0')))
+    assert(hh.TwoBodyHadronic('B0', 'K0') < lp.Leptonic('e'))
+
 def test_leptonic():
     ch = lp.Leptonic('mu')
     mS = np.array([0.1, 0.5, 1, 5, 10])
