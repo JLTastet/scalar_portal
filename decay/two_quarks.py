@@ -51,8 +51,10 @@ def _normalized_decay_width_large_mass(q, mS):
     # reproduce figure 4, on page 213, so we put it back.
     # Moreover, to get the correct threshold in the full QCD, it makes sense to
     # replace the phase-space factor β(m_q) (obtained from pQCD) with β(m_Hq).
+    # Finally, since the lightest open-flavor state is in S wave, unlike q-qbar
+    # which is in P wave, we should use β¹(m_Hq) instead of β³(m_Hq).
     beta = _beta(_thresholds[q]/2, mS)
-    w = 3*mS*mq**2/(8*pi*v**2) * beta**3 * (1 + _Delta_QCD(aS, _Nf) + _Delta_t(aS, mq, mS))
+    w = 3*mS*mq**2/(8*pi*v**2) * beta * (1 + _Delta_QCD(aS, _Nf) + _Delta_t(aS, mq, mS))
     return w
 
 def normalized_decay_width(q, mS):
