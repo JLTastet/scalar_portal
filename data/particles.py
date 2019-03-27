@@ -7,8 +7,8 @@ import pandas
 import numpy as np
 from particletools.tables import PYTHIAParticleData
 
-import constants as cst
-import qcd
+from . import constants as cst
+from . import qcd
 
 _srcdir = os.path.dirname(__file__)
 
@@ -19,8 +19,9 @@ _srcdir = os.path.dirname(__file__)
 _k0_codes = {'K_S': 310, 'K_L': 130}
 _k0_names = {val: key for key, val in _k0_codes.items()}
 
-_meson_df = pandas.read_table(os.path.join(_srcdir, 'meson_properties.dat'))
-_meson_names = list(_meson_df.Name) + _k0_codes.keys()
+_meson_df = pandas.read_csv(os.path.join(_srcdir, 'meson_properties.dat'),
+                            delim_whitespace=True)
+_meson_names = list(_meson_df.Name) + list(_k0_codes.keys())
 
 def _get_meson(feature, value):
     query = _meson_df[_meson_df[feature] == value]

@@ -26,7 +26,7 @@ def format_pythia_string(parent_id, children_ids, branching_ratio, matrix_elemen
     Format the decay parameters into a string readily usable to add the decay
     channel to the PYTHIA event generator.
     '''
-    return '{}:addChannel = 1 {} {} {}'.format(
+    return '{}:addChannel = 1 {:.12} {} {}'.format(
         parent_id, branching_ratio, matrix_element,
         ' '.join(str(child_id) for child_id in children_ids))
 

@@ -75,9 +75,7 @@ class ActiveProcesses(object):
         'List all available groups of processes.'
         return list(self._process_groups)
 
-    def get_active_processes(self, sorted=True):
+    def get_active_processes(self):
         'Return the `Channel` objects for all active processes.'
         lst = [self._process_dict[ch] for ch in self._active]
-        if sorted:
-            lst.sort()
         return lst

@@ -17,7 +17,7 @@ def format_pythia_particle_string(
         pdg_id, name, antiname, spin_type, charge_type, mass, lifetime_si,
         new=True, may_decay=True, is_visible=False):
     lifetime_mm = 1e3 * lifetime_si * c_si
-    all_prop = '{}:{} = {} {} {} {} 0 {} 0.0 0.0 0.0 {}'.format(
+    all_prop = '{}:{} = {} {} {} {} 0 {} 0.0 0.0 0.0 {:.12}'.format(
         pdg_id, 'new' if new else 'all', name, antiname, spin_type, charge_type,
         mass, lifetime_mm)
     is_resonance = '{}:isResonance = false'.format(pdg_id)
@@ -152,5 +152,5 @@ class BranchingRatiosResult(object):
         production_strs = self.production.pythia_strings()
         decay_strs = self.decays.pythia_strings()
         full_string = '\n'.join(
-            [particle_str] + production_strs.values() + decay_strs.values())
+            [particle_str] + list(production_strs.values()) + list(decay_strs.values()))
         return full_string
