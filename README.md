@@ -7,7 +7,7 @@ This package implements the main production and decay channels of a light (GeV-s
 
 ### Known issues
 * We currently ignore charm threshold effects such as S – χ mixing, which can lead to a large enhancement of Γ(S → g g) in the vicinity of c–cbar bound states, as discussed in \[1\].
-* In order to obtain the correct physical threshold for S → D Dbar, we compute the phase-space factor β³ using m\_D instead of mbar\_c in Γ(S → c cbar). It is not clear whether this is correct, since β³(mbar\_c) was computed for a P-wave c–cbar final state, while \[1\] argues that the first mesonic open-flavor decay modes, such as S → D Dbar, should be S-wave. So we might need to use β(m\_D) instead.
+* In order to obtain the correct physical threshold for S → D Dbar, we use the S-wave phase-space factor β(m\_D) instead of the P-wave one, β³(mbar\_c), for Γ(S → c cbar). This needs to be double-checked.
 
 1. Drees, M., Hikasa, K., 1990.  
    Heavy-quark thresholds in Higgs-boson physics.  
