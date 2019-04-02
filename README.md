@@ -51,6 +51,8 @@ res.decays.branching_ratios
 # Print the PYTHIA string that would be used to implement this model.
 print(res.pythia_full_string())
 
+# Note: properties return precomputed results, while method calls do extra computations.
+
 # Now use the vectorized interface to compute the branching ratios for a range of masses and couplings.
 # Note: not all calculations are internally vectorized (e.g. the running of alpha_s is not).
 import numpy as np
