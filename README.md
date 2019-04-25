@@ -79,7 +79,6 @@ assert(np.isfinite(res.total_width))
 
 ### Known issues
 * We currently ignore charm threshold effects such as S – χ mixing, which can lead to a large enhancement of Γ(S → g g) in the vicinity of c–cbar bound states, as discussed in \[1\].
-* In order to obtain the correct physical threshold for S → D Dbar, we use the S-wave phase-space factor β(m\_D) instead of the P-wave one, β³(mbar\_c), for Γ(S → c cbar). This needs to be double-checked.
 
 1. Drees, M., Hikasa, K., 1990.  
    Heavy-quark thresholds in Higgs-boson physics.  
