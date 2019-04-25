@@ -119,8 +119,8 @@ def test_multimeson():
     assert(np.all(mm.normalized_total_width(mS) == w))
     eps = 1e-8
     target = np.array([
-        0, 0, 8.515344911501954e-10, 8.09807552088073e-9,
-        2.4445418237273995e-8, 4.502454811519321e-8, 7.448522574728054e-8])
+        0, 0, 6.842325342810394e-10, 6.507037347327064e-9,
+        1.9642598915115103e-8, 3.6178523573490095e-8, 5.985102812537482e-8])
     assert(np.all(np.abs(w - target) <= eps * target))
 
 def test_two_gluon_width():
@@ -145,8 +145,8 @@ def test_two_quark_width():
     assert(np.all(np.isnan(w[~valid])))
     eps = 1e-8
     target = np.array([
-        5.9484739292996054e-8, 7.043334735869935e-8, 8.052846147465668e-8,
-        9.025232151866046e-8, 1.3528894912454867e-7])
+        4.485054167109034e-8, 6.273213385478923e-8, 7.557563898011938e-8,
+        8.669975909774289e-8, 1.339576192802357e-7])
     assert(np.all(np.abs(w[valid] - target) <= eps * target))
     # Test the range of validity of the formula for S -> c cbar.
     w = qq.normalized_decay_width('c', mS)
@@ -157,7 +157,7 @@ def test_two_quark_width():
     w = qq.normalized_decay_width('c', mS)
     eps = 1e-8
     target = np.array([
-        0, 1.0162429388418474e-6, 4.05627149704492e-6, 6.6522727215316685e-6,
-        8.334906122416451e-6, 0.000017180433509028372])
+        0, 8.653439606661616e-9, 5.215462624791676e-7, 2.071975664654039e-6,
+        3.6864436285061025e-6, 0.000014785007585122307])
     assert(np.all(np.abs(w - target) <= eps * target))
     assert_raises(ValueError, lambda: qq.normalized_decay_width('b', mS))
