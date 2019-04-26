@@ -150,7 +150,6 @@ _decay_groups = {
 
 
 class Model(object):
-    # TODO: update the reference to the paper.
     '''
     Phenomenological model of a GeV-scale Higgs-like scalar particle.
 
@@ -160,7 +159,10 @@ class Model(object):
     particle. It can also be used to set up the PYTHIA event generator.
 
     Main reference:
-        K. Bondarenko, M. Ovchynnikov, "Phenomenology of GeV scale scalar portal"
+        Boiarska, I., Bondarenko, K., Boyarsky, A., Gorkavenko, V.,
+        Ovchynnikov, M., Sokolenko, A., 2019.
+        Phenomenology of GeV-scale scalar portal.
+        arXiv:1904.10447 [hep-ex, physics:hep-ph].
     '''
     def __init__(self, scalar_id=default_scalar_id):
         self._production = ActiveProcesses(_production_channels, _production_groups)

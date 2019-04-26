@@ -4,6 +4,8 @@
 [![codecov.io](http://codecov.io/github/JLTastet/scalar_portal/coverage.svg?branch=master)](http://codecov.io/github/JLTastet/scalar_portal?branch=master)
 
 This package implements the main production and decay channels of a light (GeV-scale) Higgs-like scalar in a beam-dump setup.
+It closely follows formulas from [1904.10447](http://arxiv.org/abs/1904.10447).
+Please cite this paper if you use this package in your research.
 
 ### Usage
 
