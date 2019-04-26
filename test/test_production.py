@@ -7,6 +7,7 @@ import numpy as np
 
 from ..data.particles import *
 from ..production import two_body_hadronic as hh
+from ..production import two_body_quartic as q2
 
 def test_xi():
     assert_raises(ValueError, lambda: hh.xi('D', 1, 2))
@@ -130,3 +131,33 @@ def test_two_body_hadronic_width():
         1.451262487781669e-13, 1.3541563621011354e-13, 1.0154426057836744e-13, 0])
     w = hh.normalized_decay_width('B', 'K*_2(1430)', mS)
     assert(np.all(np.abs(w - target) <= epsilon * target))
+
+def test_two_body_quartic_width():
+    mS = np.array([0, 0.1, 0.5, 1.0, 2.0, 4.0, 10.0])
+    w = q2.normalized_decay_width('B', mS)
+    assert(np.all(np.isfinite(w)))
+    assert(np.all(w[2 * mS >= get_mass('B')] == 0))
+    assert(np.all(w[2 * mS <  get_mass('B')] >  0))
+    w = q2.normalized_decay_width('K', mS)
+    assert(np.all(np.isfinite(w)))
+    assert(np.all(w[2 * mS >= get_mass('K')] == 0))
+    assert(np.all(w[2 * mS <  get_mass('K')] >  0))
+    w = q2.normalized_decay_width('B_s', mS)
+    assert(np.all(np.isfinite(w)))
+    assert(np.all(w[2 * mS >= get_mass('B_s')] == 0))
+    assert(np.all(w[2 * mS <  get_mass('B_s')] >  0))
+    # Compare numerical values to the Mathematica implementation.
+    # (Scale-invariant top and bottom masses, all other quark masses set to zero.)
+    epsilon = 1e-14
+    mS = np.array([0, 0.1, 0.245, 0.3, 1])
+    target = np.array([4.792772703622526e-30, 4.385868760087906e-30,
+                       7.432231682506842e-31, 0, 0])
+    assert(np.all(np.abs(q2.normalized_decay_width('K', mS) - target) <= epsilon * target))
+    mS = np.array([0, 1, 2.6, 3, 10])
+    target = np.array([5.450294263421434e-24, 5.0439974303906796e-24,
+                       9.393809623524414e-25, 0, 0])
+    assert(np.all(np.abs(q2.normalized_decay_width('B', mS) - target) <= epsilon * target))
+    mS = np.array([0, 1, 2.65, 3, 10])
+    target = np.array([1.985777687153304e-22, 1.8427478974450345e-22,
+                       3.127933995192633e-23, 0, 0])
+    assert(np.all(np.abs(q2.normalized_decay_width('B_s', mS) - target) <= epsilon * target))

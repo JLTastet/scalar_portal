@@ -23,6 +23,8 @@ def test_groups():
     m.production.enable('K -> S pi')
     m.production.enable('B -> S pi')
     m.production.enable('B -> S K?')
+    m.production.enable('K -> S S')
+    m.production.enable('B -> S S')
     m.decays.enable('LightScalar')
     m.decays.enable('HeavyScalar')
     lp = m.production.list_enabled()

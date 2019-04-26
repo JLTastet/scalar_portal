@@ -7,6 +7,7 @@ import numpy as np
 
 from ..api import channel as ch
 from ..production import two_body_hadronic as hh
+from ..production import two_body_quartic as q2
 from ..decay import leptonic as lp
 from ..decay import two_pions as pi
 from ..decay import two_kaons as kk
@@ -127,12 +128,27 @@ def test_hadronic_production():
     w  = ch.width(mS, 0.25)
     assert(np.all(np.abs(wtot*br - w) <= epsilon * w))
 
+def test_quartic_2body():
+    ch = q2.TwoBodyQuartic('B_s0')
+    mS = np.array([0, 0.1, 0.5, 1, 2.5, 3, 10])
+    assert(np.all(ch.normalized_width(mS) == q2.normalized_decay_width('B_s', mS)))
+    assert(np.all(ch.is_open(mS) == [True, True, True, True, True, False, False]))
+    assert(np.all(ch.is_valid(mS)))
+    assert_equals(str(ch), 'B_s0 -> S S')
+    assert_equals(ch.pythia_string(0.42, 9900025), '531:addChannel = 1 0.42 0 9900025 9900025')
+    assert_raises(ValueError, lambda: q2.TwoBodyQuartic('Z'))
+    assert_raises(ValueError, lambda: q2.TwoBodyQuartic('B+'))
+    # Test internals
+    assert_raises(ValueError, lambda: q2._get_decay_constant('D'))
+
 def test_neutral_kaons():
     ch1 = hh.TwoBodyHadronic('K_L0', 'pi0', weak_eigenstate='K0')
     mS = np.array([0, 0.1, 0.5, 1, 2, 3, 5])
     assert(np.all(ch1.normalized_width(mS) == hh.normalized_decay_width('K', 'pi', mS)))
     ch2 = hh.TwoBodyHadronic('B0', 'K0')
     assert(np.all(ch2.normalized_width(mS) == hh.normalized_decay_width('B', 'K', mS)))
+    ch3 = q2.TwoBodyQuartic('K_L0', weak_eigenstate='K0')
+    assert(np.all(ch3.normalized_width(mS) == q2.normalized_decay_width('K', mS)))
 
 def test_vectorization():
     # Check that lists are handled as well as NumPy arrays
@@ -149,6 +165,7 @@ def test_vectorization():
     check_vectorization(hh.TwoBodyHadronic('B+', 'K*+'        ), mS)
     check_vectorization(hh.TwoBodyHadronic('B+', 'K_1(1270)+' ), mS)
     check_vectorization(hh.TwoBodyHadronic('B+', 'K*_2(1430)+'), mS)
+    check_vectorization(q2.TwoBodyQuartic('B0')                , mS)
     check_vectorization(lp.Leptonic('e')                       , mS)
     mS = [0.1, 0.5, 1]
     check_vectorization(pi.TwoPions('neutral'), mS)

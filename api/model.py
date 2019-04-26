@@ -8,6 +8,7 @@ from ..api.active_processes import ActiveProcesses
 from ..api.branching_ratios import *
 from ..data.constants import default_scalar_id
 from ..production.two_body_hadronic import TwoBodyHadronic
+from ..production.two_body_quartic import TwoBodyQuartic
 from ..decay.leptonic import Leptonic
 from ..decay.two_pions import TwoPions
 from ..decay.two_kaons import TwoKaons
@@ -22,6 +23,8 @@ _production_channels = [
     TwoBodyHadronic('K+'  , 'pi+'),
     TwoBodyHadronic('K_L0', 'pi0', weak_eigenstate='K0'),
     TwoBodyHadronic('K_S0', 'pi0', weak_eigenstate='K0'),
+    TwoBodyQuartic('K_L0', weak_eigenstate='K0'),
+    TwoBodyQuartic('K_S0', weak_eigenstate='K0'),
     # B meson decays
     TwoBodyHadronic('B+', 'pi+'        ),
     TwoBodyHadronic('B0', 'pi0'        ),
@@ -43,6 +46,8 @@ _production_channels = [
     TwoBodyHadronic('B0', 'K*_0(1430)0'),
     TwoBodyHadronic('B+', 'K*_2(1430)+'),
     TwoBodyHadronic('B0', 'K*_2(1430)0'),
+    TwoBodyQuartic('B0'  ),
+    TwoBodyQuartic('B_s0'),
 ]
 
 _production_groups = {
@@ -51,6 +56,11 @@ _production_groups = {
         'K+ -> S pi+'  ,
         'K_L0 -> S pi0',
         'K_S0 -> S pi0',
+    ],
+    # 2-body quartic production from kaons
+    'K -> S S': [
+        'K_L0 -> S S',
+        'K_S0 -> S S',
     ],
     # Pions
     'B -> S pi': [
@@ -98,6 +108,11 @@ _production_groups = {
         'B -> S K*_0',
         'B -> S K*_2',
     ],
+    # 2-body quartic production from B/B_s mesons
+    'B -> S S': [
+        'B0 -> S S'  ,
+        'B_s0 -> S S',
+    ]
 }
 
 # All supported decay channels

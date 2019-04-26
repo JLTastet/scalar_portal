@@ -16,6 +16,7 @@ def test_get_pdg_id():
     assert_equals(get_pdg_id('K_L0' ), +130)
     assert_equals(get_pdg_id('K_S0' ), +310)
     assert_equals(get_pdg_id('pi0'  ), +111)
+    assert_equals(get_pdg_id('B_s0' ), +531)
     assert_equals(get_pdg_id('K*_0(700)+'    ), +9000321)
     assert_equals(get_pdg_id('K*(1410)-'     ), - 100323)
     assert_equals(get_pdg_id('K_1(1270)bar0' ), -  10313)
@@ -37,6 +38,7 @@ def test_get_pdg_id():
     assert_raises(ValueError, lambda: get_pdg_id('K_L+')      )
     assert_raises(ValueError, lambda: get_pdg_id('K_Sbar0')   )
     assert_raises(ValueError, lambda: get_pdg_id('gamma0')    )
+    assert_raises(ValueError, lambda: get_pdg_id('B_s+')      )
     # Empty particle string
     assert_raises(ValueError, lambda: get_pdg_id(''))
 

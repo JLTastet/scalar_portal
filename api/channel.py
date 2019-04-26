@@ -113,21 +113,24 @@ class Channel(with_metaclass(abc.ABCMeta, object)):
 class ProductionChannel(Channel):
     '''
     Wraps a decay channel containing the scalar particle in the final state.
+
+    The `NS` argument denotes the number of scalar particles in the final state.
     '''
-    def __init__(self, parent, other_children):
-        super(ProductionChannel, self).__init__(parent, ['S'] + other_children)
+    def __init__(self, parent, other_children, NS=1):
+        super(ProductionChannel, self).__init__(parent, NS*['S'] + other_children)
+        self._NS = NS
         self._other_children = other_children
         self._parent_width = 1 / get_lifetime(self._parent)
 
     def is_open(self, mS):
-        threshold = ( get_mass(self._parent)
+        available = ( get_mass(self._parent)
                       - sum(get_mass(child) for child in self._other_children) )
-        return mS < threshold
+        return mS < available / self._NS
 
     def pythia_string(self, branching_ratio, scalar_id):
         return format_pythia_string(
             get_pdg_id(self._parent),
-            [scalar_id] + [get_pdg_id(child) for child in self._other_children],
+            self._NS*[scalar_id] + [get_pdg_id(child) for child in self._other_children],
             branching_ratio)
 
     def normalized_branching_ratio(self, mS):

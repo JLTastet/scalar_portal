@@ -79,6 +79,7 @@ assert(np.isfinite(res.total_width))
 
 ### Known issues
 * We currently ignore charm threshold effects such as S – χ mixing, which can lead to a large enhancement of Γ(S → g g) in the vicinity of c–cbar bound states, as discussed in \[1\].
+* We only consider weak eigenstates for B_s(bar)0 -> S S.
 
 1. Drees, M., Hikasa, K., 1990.  
    Heavy-quark thresholds in Higgs-boson physics.  

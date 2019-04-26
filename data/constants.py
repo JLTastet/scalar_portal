@@ -39,6 +39,7 @@ m_tau = 1776.9e-3
 #   [RPP18] Extracted from Gauge & Higgs Boson summary table
 M_W = 80.379
 M_Z = 91.1876
+M_h = 125.18
 
 # Strong coupling constant, in the MSbar scheme at the Z mass
 #   [RPP18] Extracted from Review 1. Physical Constants, p.127
@@ -126,6 +127,7 @@ meson_lifetimes = {
     'K_L0': 5.116e-8   * second,
     'B+'  : 1.638e-12  * second,
     'B0'  : 1.520e-12  * second,
+    'B_s0': 1.527e-12  * second, # "Flavor-specific" mean life
 }
 
 # PYTHIA-related constants

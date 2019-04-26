@@ -101,6 +101,8 @@ def _get_meson_pdg_id(meson_name):
         code = -record.IdPlus
     else:
         assert(False) # pragma: no cover
+    if code == 0:
+        raise(ValueError('No PDG code for {}.'.format(meson_name)))
     return code
 
 def _get_meson_mass(meson_name):
