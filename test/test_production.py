@@ -63,7 +63,8 @@ def test_two_body_hadronic_width():
     assert(all(w[mS >= get_mass('B') - get_mass('K*_2(1430)')] == 0))
     assert_raises(ValueError, lambda: hh.normalized_decay_width('K', 'B', mS))
     assert_raises(ValueError, lambda: hh.normalized_decay_width('K', 'e', mS))
-    # Compare numerical values to Mathematica implementation (on-shell t and b masses).
+    # Compare numerical values to the Mathematica implementation.
+    # (Scale-invariant top and bottom masses, all other quark masses set to zero.)
     mS = np.array([0, 0.1, 0.3, 1, 2, 4])
     epsilon = 1e-15
     # B -> S K
