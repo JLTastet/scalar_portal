@@ -60,9 +60,6 @@ def normalized_total_width(mS):
 class Multimeson(DecayChannel):
     '''
     Toy model for multi-meson channels (4π, ηη, ρρ, …)
-
-    TODO:
-    * Handle `None` PYTHIA strings.
     '''
     def __init__(self):
         super(Multimeson, self).__init__(4 * ['pi'])
