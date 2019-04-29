@@ -30,14 +30,23 @@ class BranchingRatios(with_metaclass(abc.ABCMeta, object)):
     '''
     Represents a set of computed branching ratios.
     '''
-    def __init__(self, channels, mass, coupling,
+    def __init__(self, channels, mass, couplings,
                  ignore_invalid=False,
                  scalar_id=default_scalar_id):
         self._channels = OrderedDict((str(ch), ch) for ch in channels)
         self._mS = np.asarray(mass, dtype='float')
-        self._coupling = np.asarray(coupling, dtype='float')
+        try:
+            self._couplings = { k: np.array(v, dtype='float')
+                                for k, v in viewitems(couplings) }
+        except AttributeError:
+            raise(ValueError("'couplings' should be a dictionary (e.g. `{'theta': 1}`)."))
+        try:
+            bc = np.broadcast(self._mS, *self._couplings.values())
+        except ValueError:
+            raise(ValueError('Mass and coupling arrays could not be broadcast together.'))
+        self._ndim = bc.ndim
         self._scalar_id = scalar_id
-        self._width = OrderedDict((str(ch), ch.width(mass, coupling)) for ch in channels)
+        self._width = OrderedDict((str(ch), ch.width(mass, self._couplings)) for ch in channels)
         if ignore_invalid:
             for w in self._width.values():
                 w[np.isnan(w)] = 0
@@ -52,7 +61,7 @@ class BranchingRatios(with_metaclass(abc.ABCMeta, object)):
         pass # pragma: no cover
 
     def pythia_strings(self):
-        if self._mS.ndim > 0 or self._coupling.ndim > 0:
+        if self._ndim > 0:
             raise(ValueError('Can only generate PYTHIA strings for a single mass and coupling.'))
         for ch, br in viewitems(self.branching_ratios):
             if not np.isfinite(br):

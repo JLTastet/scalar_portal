@@ -34,7 +34,7 @@ def test_leptonic():
     ch = lp.Leptonic('mu')
     mS = np.array([0.1, 0.5, 1, 5, 10])
     assert(np.all(ch.normalized_width(mS) == lp.normalized_decay_width('mu', mS)))
-    assert(np.all(ch.width(mS, 0.25) == 0.25**2 * lp.normalized_decay_width('mu', mS)))
+    assert(np.all(ch.width(mS, {'theta': 0.25}) == 0.25**2 * lp.normalized_decay_width('mu', mS)))
     assert(np.all(ch.is_open(mS) == [False, True, True, True, True]))
     assert(np.all(ch.is_valid(mS)))
     assert_equals(str(ch), 'S -> mu+ mu-')
@@ -110,7 +110,7 @@ def test_hadronic_production():
     ch = hh.TwoBodyHadronic('B+', 'K*+')
     mS = np.array([0, 0.1, 0.5, 1, 2, 3, 5])
     assert(np.all(ch.normalized_width(mS) == hh.normalized_decay_width('B', 'K*', mS)))
-    assert(np.all(ch.width(mS, 0.25) == 0.25**2 * hh.normalized_decay_width('B', 'K*', mS)))
+    assert(np.all(ch.width(mS, {'theta': 0.25}) == 0.25**2 * hh.normalized_decay_width('B', 'K*', mS)))
     assert(np.all(ch.is_open(mS) == [True, True, True, True, True, True, False]))
     assert(np.all(ch.is_valid(mS)))
     assert_equals(str(ch), 'B+ -> S K*+')
@@ -125,8 +125,8 @@ def test_hadronic_production():
     br1 = ch.normalized_branching_ratio(mS)
     w1  = ch.normalized_width(mS)
     assert(np.all(np.abs(wtot*br1 - w1) <= epsilon * w1))
-    br = ch.branching_ratio(mS, 0.25)
-    w  = ch.width(mS, 0.25)
+    br = ch.branching_ratio(mS, {'theta': 0.25})
+    w  = ch.width(mS, {'theta': 0.25})
     assert(np.all(np.abs(wtot*br - w) <= epsilon * w))
 
 def test_quartic_2body():
@@ -139,6 +139,8 @@ def test_quartic_2body():
     assert_equals(ch.pythia_string(0.42, 9900025), '531:addChannel = 1 0.42 0 9900025 9900025')
     assert_raises(ValueError, lambda: q2.TwoBodyQuartic('Z'))
     assert_raises(ValueError, lambda: q2.TwoBodyQuartic('B+'))
+    assert(np.all(ch.width(mS, {'alpha': 0.5}) == 0.5**2 * ch.normalized_width(mS)))
+    assert(np.all(ch.branching_ratio(mS, {'alpha': 0.5}) == 0.5**2 * ch.normalized_branching_ratio(mS)))
     # Test internals
     assert_raises(ValueError, lambda: q2._get_decay_constant('D'))
 

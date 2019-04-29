@@ -51,17 +51,19 @@ def test_result():
     m.production.enable_all()
     m.decays.enable('LightScalar')
     mS = np.array([0.1, 0.5, 1])
-    res = m.compute_branching_ratios(mS, 0.25)
+    res = m.compute_branching_ratios(mS, theta=0.25, alpha=0)
     assert(isinstance(res, BranchingRatiosResult))
+    res2 = m.compute_branching_ratios(mS, {'theta': 0.25, 'alpha': 0})
+    assert(np.all(res.total_width == res2.total_width))
 
 def test_toy_model_matching():
     m = Model()
     Lambda = 2.0 # Matching scale in GeV
     m.production.enable_all()
     m.decays.enable('LightScalar')
-    res_low  = m.compute_branching_ratios(Lambda, 1)
+    res_low  = m.compute_branching_ratios(Lambda, theta=1, alpha=0)
     m.decays.disable_all()
     m.decays.enable('HeavyScalar')
-    res_high = m.compute_branching_ratios(Lambda, 1)
+    res_high = m.compute_branching_ratios(Lambda, theta=1, alpha=0)
     eps = 1e-8
     assert(abs(res_low.total_width - res_high.total_width) <= eps * res_high.total_width)

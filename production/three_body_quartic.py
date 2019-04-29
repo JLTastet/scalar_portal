@@ -60,7 +60,7 @@ class ThreeBodyQuartic(ProductionChannel):
             weak_eigenstate = H
         if not (is_meson(weak_eigenstate) and is_meson(H1)):
             raise(ValueError('{} and {} must be mesons.'.format(weak_eigenstate, H1)))
-        super(ThreeBodyQuartic, self).__init__(H, [H1], NS=2)
+        super(ThreeBodyQuartic, self).__init__(H, [H1], coefficient='alpha', NS=2)
         try:
             self._X  = get_qcd_state(weak_eigenstate)
             self._X1 = get_qcd_state(H1)

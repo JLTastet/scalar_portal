@@ -46,9 +46,10 @@ class Channel(with_metaclass(abc.ABCMeta, object)):
     Wraps a decay channel containing the scalar particle either in the initial
     or final state.
     '''
-    def __init__(self, parent, children):
+    def __init__(self, parent, children, coefficient='theta'):
         self._parent = parent
         self._children = children
+        self._coefficient = coefficient
         self._str = _to_channel_str(parent, children)
 
     def __str__(self):
@@ -84,18 +85,19 @@ class Channel(with_metaclass(abc.ABCMeta, object)):
     @abc.abstractmethod
     def normalized_width(self, mS):
         '''
-        Returns the width for this channel, assuming a unit mixing angle: θ = 1.
+        Returns the width for this channel, assuming unit couplings.
         '''
         pass # pragma: no cover
 
-    def width(self, mS, theta):
+    def width(self, mS, couplings):
         '''
-        Returns the width for this channel for an arbitrary mixing angle θ.
+        Returns the width for this channel for arbitrary couplings.
 
-        The default implementation assumes θ² scaling. It should be overridden
-        if this is not the case.
+        The default implementation assumes quadratic scaling. It should be
+        overridden if this is not the case.
         '''
-        return theta**2 * self.normalized_width(mS)
+        c = couplings[self._coefficient]
+        return c**2 * self.normalized_width(mS)
 
     @abc.abstractmethod
     def pythia_string(self, branching_ratio, scalar_id):
@@ -116,8 +118,9 @@ class ProductionChannel(Channel):
 
     The `NS` argument denotes the number of scalar particles in the final state.
     '''
-    def __init__(self, parent, other_children, NS=1):
-        super(ProductionChannel, self).__init__(parent, NS*['S'] + other_children)
+    def __init__(self, parent, other_children, NS=1, *args, **kwargs):
+        super(ProductionChannel, self).__init__(
+            parent, NS*['S'] + other_children, *args, **kwargs)
         self._NS = NS
         self._other_children = other_children
         self._parent_width = 1 / get_lifetime(self._parent)
@@ -136,8 +139,8 @@ class ProductionChannel(Channel):
     def normalized_branching_ratio(self, mS):
         return self.normalized_width(mS) / self._parent_width
 
-    def branching_ratio(self, mS, theta):
-        return self.width(mS, theta) / self._parent_width
+    def branching_ratio(self, mS, couplings):
+        return self.width(mS, couplings) / self._parent_width
 
     @property
     def parent_width(self):
@@ -148,8 +151,8 @@ class DecayChannel(Channel):
     '''
     Wraps a decay channel of the scalar particle.
     '''
-    def __init__(self, children):
-        super(DecayChannel, self).__init__('S', children)
+    def __init__(self, children, *args, **kwargs):
+        super(DecayChannel, self).__init__('S', children, *args, **kwargs)
 
     def is_open(self, mS):
         threshold = sum(get_mass(child) for child in self._children)

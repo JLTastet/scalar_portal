@@ -69,7 +69,7 @@ class TwoBodyQuartic(ProductionChannel):
             weak_eigenstate = H
         if not is_meson(weak_eigenstate):
             raise(ValueError('{} is not a meson.'.format(weak_eigenstate)))
-        super(TwoBodyQuartic, self).__init__(H, [], NS=2)
+        super(TwoBodyQuartic, self).__init__(H, [], coefficient='alpha', NS=2)
         self._X = get_qcd_state(weak_eigenstate)
         if get_charge(weak_eigenstate) != 0:
             raise(ValueError('X -> S S is only possible if X is neutral (X = {}).'

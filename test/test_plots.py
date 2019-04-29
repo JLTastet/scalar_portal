@@ -23,7 +23,7 @@ def _plot_production(process='All', pred=lambda ch: True, mS_max=5.25, res=800, 
     else:
         m.production.enable(process)
     mS = np.linspace(0, mS_max, res)
-    result = m.compute_branching_ratios(mS, 1)
+    result = m.compute_branching_ratios(mS, theta=1, alpha=0)
     widths = result.production.width
     brs = result.production.branching_ratios
     # Plot decay widths of heavy hadrons to the Scalar
@@ -73,8 +73,8 @@ def test_decay_plot(res=800):
     m_high.decays.enable('HeavyScalar')
     mS_low = np.linspace(0, threshold, res)
     mS_high = np.linspace(threshold, 5, res)
-    res_low = m_low.compute_branching_ratios(mS_low, 1)
-    res_high = m_high.compute_branching_ratios(mS_high, 1)
+    res_low = m_low.compute_branching_ratios(mS_low, theta=1)
+    res_high = m_high.compute_branching_ratios(mS_high, theta=1)
     widths_low = res_low.decays.width
     widths_high = res_high.decays.width
     brs_low = res_low.decays.branching_ratios

@@ -37,7 +37,7 @@ m.decays.enable('LightScalar')
 m.decays.list_enabled()
 
 # Compute the branching ratios for a Scalar mass of 1.2 GeV and θ = 1e-4.
-res = m.compute_branching_ratios(1.2, 1e-4)
+res = m.compute_branching_ratios(1.2, theta=1e-4)
 
 # Query the lifetime of the Scalar (in seconds) and its total decay width in GeV.
 res.lifetime_si
@@ -60,7 +60,7 @@ print(res.pythia_full_string())
 import numpy as np
 mS = np.linspace(0.1, 1.8, 50)
 theta = np.linspace(1e-3, 1e-2, 20)
-res = m.compute_branching_ratios(mS[:,np.newaxis], theta[np.newaxis,:])
+res = m.compute_branching_ratios(mS[:,np.newaxis], theta=theta[np.newaxis,:])
 assert(res.total_width.shape == (50, 20))
 
 # All results except PYTHIA strings are vectorized.
@@ -69,13 +69,13 @@ res.production.branching_ratios
 res.decays.width
 
 # If the calculation is invalid for a given mass and θ, NaN's are returned, e.g.:
-res = m.compute_branching_ratios(3.0, 1e-5)
+res = m.compute_branching_ratios(3.0, theta=1e-5)
 assert(np.isnan(res.total_width))
 
 # For a Scalar above 2 GeV, we must select the decay channels for the heavy Scalar.
 m.decays.disable_all()
 m.decays.enable('HeavyScalar')
-res = m.compute_branching_ratios(3.0, 1e-5)
+res = m.compute_branching_ratios(3.0, theta=1e-5)
 assert(np.isfinite(res.total_width))
 ```
 
