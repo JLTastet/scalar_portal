@@ -21,7 +21,7 @@ def normalized_decay_width(X, X1, mS, eps=1e-3):
     mX = get_mass(X)
     mX1 = get_mass(X1)
     # Part of the prefactor has been absorbed in the normalized amplitude.
-    prefactor = 1 / (64*pi**3 * mX**3 * M_h**4)
+    prefactor = 1 / (128*pi**3 * mX**3 * M_h**4)
     # Integration
     lower_bound = 4*mS**2
     upper_bound = (mX-mX1)**2
