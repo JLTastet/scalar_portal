@@ -120,6 +120,23 @@ def ckm(i,j):
     else:
         raise(ValueError('Wrong generation index in CKM matrix: ({},{}).'.format(i,j)))
 
+_u2i = {'u':1, 'c': 2, 't': 3}
+_d2j = {'d':1, 's': 2, 'b': 3}
+
+def VUD(U, D):
+    '''
+    Same as `ckm`, but indexed with quark names instead of numerical indices.
+    '''
+    try:
+        i = _u2i[U]
+    except KeyError:
+        raise(ValueError('{} should be u, c or t.'.format(U)))
+    try:
+        j = _d2j[D]
+    except KeyError:
+        raise(ValueError('{} should be d, s or b.'.format(D)))
+    return ckm(i,j)
+
 # Lifetimes of long-lived mesons (from [RPP18])
 meson_lifetimes = {
     'K+'  : 1.2380e-8  * second,

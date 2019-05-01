@@ -20,3 +20,17 @@ def test_ckm():
     assert_raises(ValueError, lambda: c.ckm(4,1))
     assert_raises(ValueError, lambda: c.ckm(1,0))
     assert_raises(ValueError, lambda: c.ckm(1,4))
+
+def test_VUD():
+    assert_equals(c.VUD('u','d'), c.Vud)
+    assert_equals(c.VUD('u','s'), c.Vus)
+    assert_equals(c.VUD('u','b'), c.Vub)
+    assert_equals(c.VUD('c','d'), c.Vcd)
+    assert_equals(c.VUD('c','s'), c.Vcs)
+    assert_equals(c.VUD('c','b'), c.Vcb)
+    assert_equals(c.VUD('t','d'), c.Vtd)
+    assert_equals(c.VUD('t','s'), c.Vts)
+    assert_equals(c.VUD('t','b'), c.Vtb)
+    assert_raises(ValueError, lambda: c.VUD('d', 'u'))
+    assert_raises(ValueError, lambda: c.VUD('a', 'd'))
+    assert_raises(ValueError, lambda: c.VUD('u', 'z'))
