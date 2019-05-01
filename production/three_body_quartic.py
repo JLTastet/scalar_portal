@@ -6,7 +6,7 @@ from __future__ import absolute_import
 from ..data.constants import *
 from ..data.particles import *
 from ..api.channel import ProductionChannel
-from .two_body_hadronic import _normalized_amplitude
+from . import hadronic_common as h
 
 import numpy as np
 import scipy.integrate
@@ -20,8 +20,9 @@ def normalized_decay_width(X, X1, mS, eps=1e-3):
     mS = np.asarray(mS, dtype='float')
     mX = get_mass(X)
     mX1 = get_mass(X1)
+    xi = h._get_xi(X, X1)
     # Part of the prefactor has been absorbed in the normalized amplitude.
-    prefactor = 1 / (128*pi**3 * mX**3 * M_h**4)
+    prefactor = xi**2 / (512*pi**3 * mX**3 * v**2 * M_h**4)
     # Integration
     lower_bound = 4*mS**2
     upper_bound = (mX-mX1)**2
@@ -29,10 +30,10 @@ def normalized_decay_width(X, X1, mS, eps=1e-3):
         return np.sqrt(q2) / 2
     def E3(q2):
         return (mX**2 - q2 - mX1**2) / (2*np.sqrt(q2))
-    def M(q2):
-        return _normalized_amplitude(X, X1, np.sqrt(q2))
+    M = h.get_matrix_element(X, X1)
     def integrand(q2, mS):
-        return M(q2)**2 * np.sqrt(E2(q2)**2 - mS**2) * np.sqrt(E3(q2)**2 - mX1**2)
+        A = M(q2)
+        return np.real(A*np.conj(A)) * np.sqrt(E2(q2)**2 - mS**2) * np.sqrt(E3(q2)**2 - mX1**2)
     closing_mass = (mX - mX1) / 2
     def width(mS, low, high):
         if mS < closing_mass:

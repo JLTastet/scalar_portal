@@ -15,6 +15,12 @@ mB = get_mass('B+')
 
 _form_factors = {}
 
+def get_form_factor(Y, Yprime):
+    try:
+        return _form_factors[(Y, Yprime)]
+    except KeyError:
+        raise(ValueError('No form factor for the {} -> {} transition.'.format(Y, Yprime)))
+
 # Pseudoscalar form factors (section C.1.1)
 # -----------------------------------------
 
@@ -87,9 +93,6 @@ _form_factors[('B', 'K_1(1270)')] = \
     _pseudovector_V_B_K1_form_factor(get_mass('K_1(1270)'), sin(theta_K1),  cos(theta_K1))
 _form_factors[('B', 'K_1(1400)')] = \
     _pseudovector_V_B_K1_form_factor(get_mass('K_1(1400)'), cos(theta_K1), -sin(theta_K1))
-
-def get_form_factor(Y, Yprime):
-    return _form_factors[(Y, Yprime)]
 
 # Tensor final meson state
 # ------------------------

@@ -6,7 +6,7 @@ from __future__ import absolute_import
 from ..data.constants import *
 from ..data.particles import *
 from ..api.channel import ProductionChannel
-from .two_body_hadronic import xi
+from .hadronic_common import xi
 
 import numpy as np
 
@@ -25,9 +25,9 @@ def _get_decay_constant(X):
         raise(ValueError('Decay constant not found for {}.'.format(X)))
 
 _quark_transitions = {
-    (0, 0, 1): ('D', 3, 1),
-    (1, 0, 1): ('D', 3, 2),
-    (1, 0, 0): ('D', 2, 1),
+    (0, 0, 1): ('D', 'b', 'd'),
+    (1, 0, 1): ('D', 'b', 's'),
+    (1, 0, 0): ('D', 's', 'd'),
 }
 
 def _get_quark_transitions(X):

@@ -34,3 +34,6 @@ def test_form_factors_at_zero():
     # Tensor form factors
     f = get_form_factor('B', 'K*_2(1430)')
     assert(abs(f(0) - 0.23) < 1e-2)
+    # Exceptions
+    assert_raises(ValueError, lambda: get_form_factor('K', 'B'))
+    assert_raises(ValueError, lambda: get_form_factor('B', 'D'))

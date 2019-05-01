@@ -6,45 +6,24 @@ from nose.tools import assert_equals, assert_raises
 import numpy as np
 
 from ..data.particles import *
+from ..production import hadronic_common as hc
 from ..production import two_body_hadronic as hh
 from ..production import two_body_quartic as q2
 
 def test_xi():
-    assert_raises(ValueError, lambda: hh.xi('D', 1, 2))
-    assert_raises(ValueError, lambda: hh.xi('Z', 2, 1))
-    assert_raises(ValueError, lambda: hh.xi('D', 2, 0))
-    assert_raises(ValueError, lambda: hh.xi('D', 4, 1))
+    assert_raises(ValueError, lambda: hc.xi('Z', 's', 'd'))
+    assert_raises(ValueError, lambda: hc.xi('D', 's', 'z'))
+    assert_raises(ValueError, lambda: hc.xi('D', 'a', 'd'))
     # Compare numerical values to Mathematica implementation (with on-shell
     # masses for b and t , and u, d, s, c are assumed to be massless).
     xi_dds, xi_uuc, xi_ddb, xi_dsb = (
         3.0278603568988333e-6, 9.103687490947078e-10, 0.00007830938334212971,
         0.0003809123090962853)
     epsilon = 1e-15
-    assert(abs(hh.xi('D', 2, 1) - xi_dds) / xi_dds < epsilon)
-    assert(abs(hh.xi('D', 3, 1) - xi_ddb) / xi_ddb < epsilon)
-    assert(abs(hh.xi('D', 3, 2) - xi_dsb) / xi_dsb < epsilon)
-    assert(abs(hh.xi('U', 2, 1) - xi_uuc) / xi_uuc < epsilon)
-
-def test_two_body_hadronic_amplitude():
-    mS = np.array([0, 0.1, 0.5, 1.0, 2.0, 4.0, 10.0])
-    A = hh._normalized_amplitude('K', 'pi'        , mS)
-    assert(all(np.isfinite(A)))
-    assert(all(A[mS >= get_mass('K') - get_mass('pi')] == 0))
-    A = hh._normalized_amplitude('B', 'pi'        , mS)
-    assert(all(np.isfinite(A)))
-    assert(all(A[mS >= get_mass('B') - get_mass('pi')] == 0))
-    A = hh._normalized_amplitude('B', 'K'         , mS)
-    A = hh._normalized_amplitude('B', 'K*'        , mS)
-    A = hh._normalized_amplitude('B', 'K*(1410)'  , mS)
-    A = hh._normalized_amplitude('B', 'K_1(1270)' , mS)
-    A = hh._normalized_amplitude('B', 'K*_0(700)' , mS)
-    A = hh._normalized_amplitude('B', 'K*_2(1430)', mS)
-    assert(all(np.isfinite(A)))
-    assert(all(A[mS >= get_mass('B') - get_mass('K*_2(1430)')] == 0))
-    assert_raises(ValueError, lambda: hh._normalized_amplitude('K', 'B', mS))
-    assert_raises(ValueError, lambda: hh._normalized_amplitude('K', 'e', mS))
-    # Check that trying to compute χ_Y' for a spin other than 0, 1 or 2 fails.
-    assert_raises(ValueError, lambda: hh._chi('B', 'e', 0.))
+    assert(abs(hc.xi('D', 's', 'd') - xi_dds) / xi_dds < epsilon)
+    assert(abs(hc.xi('D', 'b', 'd') - xi_ddb) / xi_ddb < epsilon)
+    assert(abs(hc.xi('D', 'b', 's') - xi_dsb) / xi_dsb < epsilon)
+    assert(abs(hc.xi('U', 'c', 'u') - xi_uuc) / xi_uuc < epsilon)
 
 def test_two_body_hadronic_width():
     mS = np.array([0, 0.1, 0.5, 1.0, 2.0, 4.0, 10.0])
@@ -67,7 +46,7 @@ def test_two_body_hadronic_width():
     # Compare numerical values to the Mathematica implementation.
     # (Scale-invariant top and bottom masses, all other quark masses set to zero.)
     mS = np.array([0, 0.1, 0.3, 1, 2, 4])
-    epsilon = 1e-15
+    epsilon = 1e-14
     # B -> S K
     target = np.array([
         1.8602870173762396e-13, 1.8605806557632914e-13, 1.8629312904592422e-13,
@@ -89,13 +68,13 @@ def test_two_body_hadronic_width():
     # B -> S K*_0(700)
     mS = np.array([0., 1., 2., 4.])
     target = np.array([
-        3.447337991078414e-13, 3.447915392282109e-13, 3.3230731555016296e-13,
-        7.006189718021021e-14])
+        3.4473379910784134e-13, 3.19895254388887e-13, 2.417223066652809e-13,
+        1.1865110968774578e-14])
     w = hh.normalized_decay_width('B', 'K*_0(700)' , mS)
     assert(np.all(np.abs(w - target) <= epsilon * target))
     # B -> S K*_0(1430)
     target = np.array([
-        4.0404520553792716e-14, 4.930887800512882e-14, 9.408010032682152e-14, 0])
+        4.0404520553792716e-14, 4.5565854295386445e-14, 6.720489080067342e-14, 0])
     w = hh.normalized_decay_width('B', 'K*_0(1430)', mS)
     assert(np.all(np.abs(w - target) <= epsilon * target))
     # B -> S K*
@@ -131,6 +110,10 @@ def test_two_body_hadronic_width():
         1.451262487781669e-13, 1.3541563621011354e-13, 1.0154426057836744e-13, 0])
     w = hh.normalized_decay_width('B', 'K*_2(1430)', mS)
     assert(np.all(np.abs(w - target) <= epsilon * target))
+    # Exceptions
+    assert_raises(ValueError, lambda: hh.normalized_decay_width('B', 'D', mS))
+    assert_raises(ValueError, lambda: hc._get_quark_transition('B', 'D'))
+    assert_raises(ValueError, lambda: hc.get_matrix_element('B', 'D'))
 
 def test_two_body_quartic_width():
     mS = np.array([0, 0.1, 0.5, 1.0, 2.0, 4.0, 10.0])
