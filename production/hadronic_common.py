@@ -85,7 +85,7 @@ _matrix_elements[(1, -1)] = MXP
 # Scalar
 
 def MXS(q2, mX, mS, mQi, mQj, F):
-    return 1j * (mX**2 - mS**2 - q2) / (mQj/mQi + 1) * F(q2)
+    return 1j * (mX**2 - mS**2) / (mQj/mQi + 1) * F(q2)
 
 _matrix_elements[(1, +1)] = MXS
 

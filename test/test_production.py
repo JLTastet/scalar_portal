@@ -68,13 +68,13 @@ def test_two_body_hadronic_width():
     # B -> S K*_0(700)
     mS = np.array([0., 1., 2., 4.])
     target = np.array([
-        3.4473379910784134e-13, 3.19895254388887e-13, 2.417223066652809e-13,
-        1.1865110968774578e-14])
+        3.447337991078414e-13, 3.447915392282109e-13, 3.3230731555016296e-13,
+        7.006189718021021e-14])
     w = hh.normalized_decay_width('B', 'K*_0(700)' , mS)
     assert(np.all(np.abs(w - target) <= epsilon * target))
     # B -> S K*_0(1430)
     target = np.array([
-        4.0404520553792716e-14, 4.5565854295386445e-14, 6.720489080067342e-14, 0])
+        4.0404520553792716e-14, 4.930887800512882e-14, 9.408010032682152e-14, 0])
     w = hh.normalized_decay_width('B', 'K*_0(1430)', mS)
     assert(np.all(np.abs(w - target) <= epsilon * target))
     # B -> S K*
