@@ -100,4 +100,4 @@ _form_factors[('B', 'K_1(1400)')] = \
 def _tensor_A0_form_factor(F0, aT, bT):
     return lambda q2: F0 / ( (1-q2/mB**2) * (1-aT*(q2/mB**2)+bT*(q2/mB**2)**2) )
 
-_form_factors[('B', 'K*_2(1430)')] = _tensor_A0_form_factor(0.23, 1.23, 0.76)
+_form_factors[('B', 'K*_2(1430)')] = _tensor_A0_form_factor(0.23, 1.23, 0.74)

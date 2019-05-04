@@ -107,7 +107,7 @@ def test_two_body_hadronic_width():
     assert(np.all(np.abs(w - target) <= epsilon * target))
     # B -> S K*_2(1430)
     target = np.array([
-        1.451262487781669e-13, 1.3541563621011354e-13, 1.0154426057836744e-13, 0])
+        1.451262487781669e-13, 1.3542292574122081e-13, 1.0164406039681797e-13, 0])
     w = hh.normalized_decay_width('B', 'K*_2(1430)', mS)
     assert(np.all(np.abs(w - target) <= epsilon * target))
     # Exceptions

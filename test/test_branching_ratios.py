@@ -90,7 +90,7 @@ def test_result_strings():
 9900025:mayDecay = true
 9900025:isVisible = false
 521:addChannel = 1 0.0123084672076 0 9900025 211
-521:addChannel = 1 0.355312987843 0 9900025 325
+521:addChannel = 1 0.355314144321 0 9900025 325
 9900025:addChannel = 1 3.14194722291e-05 0 -11 11
 9900025:addChannel = 1 0.999968580528 0 -13 13
 9900025:addChannel = 1 0.0 0 -15 15'''
