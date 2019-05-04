@@ -10,6 +10,7 @@ from . import hadronic_common as h
 
 import numpy as np
 import scipy.integrate
+from warnings import warn
 
 
 def normalized_decay_width(X, X1, mS, eps=1e-3):
@@ -71,3 +72,7 @@ class ThreeBodyQuartic(ProductionChannel):
 
     def normalized_width(self, mS):
         return normalized_decay_width(self._X, self._X1, mS, eps=self._eps)
+
+    def pythia_string(self, *args, **kwargs):
+        warn('Assuming pure phase-space decay for {}'.format(str(self)))
+        return super(ThreeBodyQuartic, self).pythia_string(*args, **kwargs)
