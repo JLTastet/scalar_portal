@@ -9,6 +9,7 @@ from ..api.branching_ratios import *
 from ..data.constants import default_scalar_id
 from ..production.two_body_hadronic import TwoBodyHadronic
 from ..production.two_body_quartic import TwoBodyQuartic
+from ..production.three_body_quartic import ThreeBodyQuartic
 from ..decay.leptonic import Leptonic
 from ..decay.two_pions import TwoPions
 from ..decay.two_kaons import TwoKaons
@@ -20,12 +21,15 @@ from ..decay.two_quarks import TwoQuarks
 # All supported production channels
 _production_channels = [
     # Kaon decays
+    # * Two-body decays through mixing with the SM Higgs
     TwoBodyHadronic('K+'  , 'pi+'),
     TwoBodyHadronic('K_L0', 'pi0', weak_eigenstate='K0'),
     TwoBodyHadronic('K_S0', 'pi0', weak_eigenstate='K0'),
+    # * Two-body decays through the quartic interaction
     TwoBodyQuartic('K_L0', weak_eigenstate='K0'),
     TwoBodyQuartic('K_S0', weak_eigenstate='K0'),
     # B meson decays
+    # * Two-body decays through mixing with the SM Higgs
     TwoBodyHadronic('B+', 'pi+'        ),
     TwoBodyHadronic('B0', 'pi0'        ),
     TwoBodyHadronic('B+', 'K+'         ),
@@ -46,8 +50,30 @@ _production_channels = [
     TwoBodyHadronic('B0', 'K*_0(1430)0'),
     TwoBodyHadronic('B+', 'K*_2(1430)+'),
     TwoBodyHadronic('B0', 'K*_2(1430)0'),
+    # * Two-body decays through the quartic interaction
     TwoBodyQuartic('B0'  ),
     TwoBodyQuartic('B_s0'),
+    # * Three-body decays through the quartic interaction
+    ThreeBodyQuartic('B+', 'pi+'        ),
+    ThreeBodyQuartic('B0', 'pi0'        ),
+    ThreeBodyQuartic('B+', 'K+'         ),
+    ThreeBodyQuartic('B0', 'K0'         ), # Final-state mixing handled by PYTHIA
+    ThreeBodyQuartic('B+', 'K*+'        ),
+    ThreeBodyQuartic('B0', 'K*0'        ),
+    ThreeBodyQuartic('B+', 'K*(1410)+'  ),
+    ThreeBodyQuartic('B0', 'K*(1410)0'  ),
+    ThreeBodyQuartic('B+', 'K*(1680)+'  ),
+    ThreeBodyQuartic('B0', 'K*(1680)0'  ),
+    ThreeBodyQuartic('B+', 'K_1(1270)+' ),
+    ThreeBodyQuartic('B0', 'K_1(1270)0' ),
+    ThreeBodyQuartic('B+', 'K_1(1400)+' ),
+    ThreeBodyQuartic('B0', 'K_1(1400)0' ),
+    ThreeBodyQuartic('B+', 'K*_0(700)+' ),
+    ThreeBodyQuartic('B0', 'K*_0(700)0' ),
+    ThreeBodyQuartic('B+', 'K*_0(1430)+'),
+    ThreeBodyQuartic('B0', 'K*_0(1430)0'),
+    ThreeBodyQuartic('B+', 'K*_2(1430)+'),
+    ThreeBodyQuartic('B0', 'K*_2(1430)0'),
 ]
 
 _production_groups = {
@@ -67,10 +93,18 @@ _production_groups = {
         'B+ -> S pi+',
         'B0 -> S pi0',
     ],
+    'B -> S S pi': [
+        'B+ -> S S pi+',
+        'B0 -> S S pi0',
+    ],
     # Pseudoscalar mesons
     'B -> S K': [
         'B+ -> S K+',
         'B0 -> S K0',
+    ],
+    'B -> S S K': [
+        'B+ -> S S K+',
+        'B0 -> S S K0',
     ],
     # Vector mesons
     'B -> S K*': [
@@ -81,12 +115,26 @@ _production_groups = {
         'B+ -> S K*(1680)+',
         'B0 -> S K*(1680)0',
     ],
+    'B -> S S K*': [
+        'B+ -> S S K*+'      ,
+        'B0 -> S S K*0'      ,
+        'B+ -> S S K*(1410)+',
+        'B0 -> S S K*(1410)0',
+        'B+ -> S S K*(1680)+',
+        'B0 -> S S K*(1680)0',
+    ],
     # Axial-vector mesons
     'B -> S K_1': [
         'B+ -> S K_1(1270)+',
         'B0 -> S K_1(1270)0',
         'B+ -> S K_1(1400)+',
         'B0 -> S K_1(1400)0',
+    ],
+    'B -> S S K_1': [
+        'B+ -> S S K_1(1270)+',
+        'B0 -> S S K_1(1270)0',
+        'B+ -> S S K_1(1400)+',
+        'B0 -> S S K_1(1400)0',
     ],
     # Scalar mesons
     'B -> S K*_0': [
@@ -95,18 +143,36 @@ _production_groups = {
         'B+ -> S K*_0(1430)+',
         'B0 -> S K*_0(1430)0',
     ],
+    'B -> S S K*_0': [
+        'B+ -> S S K*_0(700)+' ,
+        'B0 -> S S K*_0(700)0' ,
+        'B+ -> S S K*_0(1430)+',
+        'B0 -> S S K*_0(1430)0',
+    ],
     # Tensor mesons
     'B -> S K*_2': [
         'B+ -> S K*_2(1430)+',
         'B0 -> S K*_2(1430)0',
     ],
-    # All decays to kaons
+    'B -> S S K*_2': [
+        'B+ -> S S K*_2(1430)+',
+        'B0 -> S S K*_2(1430)0',
+    ],
+    # All two-body decays to kaons
     'B -> S K?': [
         'B -> S K'   ,
         'B -> S K*'  ,
         'B -> S K_1' ,
         'B -> S K*_0',
         'B -> S K*_2',
+    ],
+    # All three-body decays to kaons
+    'B -> S S K?': [
+        'B -> S S K'   ,
+        'B -> S S K*'  ,
+        'B -> S S K_1' ,
+        'B -> S S K*_0',
+        'B -> S S K*_2',
     ],
     # 2-body quartic production from B/B_s mesons
     'B -> S S': [
