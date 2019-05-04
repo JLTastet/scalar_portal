@@ -9,6 +9,7 @@ from ..data.particles import *
 from ..production import hadronic_common as hc
 from ..production import two_body_hadronic as hh
 from ..production import two_body_quartic as q2
+from ..production import three_body_quartic as q3
 
 def test_xi():
     assert_raises(ValueError, lambda: hc.xi('Z', 's', 'd'))
@@ -144,3 +145,56 @@ def test_two_body_quartic_width():
     target = np.array([1.985777687153304e-22, 1.8427478974450345e-22,
                        3.127933995192633e-23, 0, 0])
     assert(np.all(np.abs(q2.normalized_decay_width('B_s', mS) - target) <= epsilon * target))
+
+def test_three_body_quartic_width():
+    eps = 1e-13
+    w = q3.normalized_decay_width('B', 'K', [0, 1, 2.35, 2.5], eps=eps)
+    target = np.array([
+        5.864813137291421e-23, 3.7761205048911344e-23, 8.811002889266824e-26, 0])
+    assert(np.all(np.isfinite(w)))
+    assert(np.all(np.abs(w - target) <= eps * np.max(target)))
+    w = q3.normalized_decay_width('B', 'pi', [0, 1, 2.5, 2.6], eps=eps)
+    target = np.array([
+        1.8708923449104718e-24, 1.285452250616117e-24, 6.65590506978302e-27, 0])
+    assert(np.all(np.isfinite(w)))
+    assert(np.all(np.abs(w - target) <= eps * np.max(target)))
+    w = q3.normalized_decay_width('B', 'K*', [0, 1, 2.1, 2.2], eps=eps)
+    target = np.array([
+        4.282516077558582e-23, 2.2125750925998816e-23, 6.961437471254587e-26, 0])
+    assert(np.all(np.isfinite(w)))
+    assert(np.all(np.abs(w - target) <= eps * np.max(target)))
+    w = q3.normalized_decay_width('B', 'K*(1410)', [0, 1, 1.9, 2.0], eps=eps)
+    target = np.array([
+        8.92640419964295e-24, 2.755185932435649e-24, 1.9488533048430092e-28, 0])
+    assert(np.all(np.isfinite(w)))
+    assert(np.all(np.abs(w - target) <= eps * np.max(target)))
+    w = q3.normalized_decay_width('B', 'K*(1680)', [0, 1, 1.7, 1.8], eps=eps)
+    target = np.array([
+        4.687384822781292e-24, 1.1381159882913425e-24, 2.3497197326151174e-27, 0])
+    assert(np.all(np.isfinite(w)))
+    assert(np.all(np.abs(w - target) <= eps * np.max(target)))
+    w = q3.normalized_decay_width('B', 'K_1(1270)', [0, 1, 2, 2.1], eps=eps)
+    target = np.array([
+        5.129426387752128e-23, 2.03947298773292e-23, 2.7069264949652506e-30, 0])
+    assert(np.all(np.isfinite(w)))
+    assert(np.all(np.abs(w - target) <= eps * np.max(target)))
+    w = q3.normalized_decay_width('B', 'K_1(1400)', [0, 1, 1.9, 2], eps=eps)
+    target = np.array([
+        3.140488910017822e-25, 7.279745127485522e-26, 1.0549841832137387e-28, 0])
+    assert(np.all(np.isfinite(w)))
+    assert(np.all(np.abs(w - target) <= eps * np.max(target)))
+    w = q3.normalized_decay_width('B', 'K*_2(1430)', [0, 1, 1.9, 2], eps=eps)
+    target = np.array([
+        1.1878140839320772e-23, 3.15219398483355e-24, 1.0108597041349455e-29, 0])
+    assert(np.all(np.isfinite(w)))
+    assert(np.all(np.abs(w - target) <= eps * np.max(target)))
+    w = q3.normalized_decay_width('B', 'K*_0(700)', [0, 1, 2.2, 2.3], eps=eps)
+    target = np.array([
+        5.330370207723244e-23, 2.4172172189154465e-23, 3.82287725947574e-27, 0])
+    assert(np.all(np.isfinite(w)))
+    assert(np.all(np.abs(w - target) <= eps * np.max(target)))
+    w = q3.normalized_decay_width('B', 'K*_0(1430)', [0, 1, 1.9, 2], eps=eps)
+    target = np.array([
+        1.7385144471025448e-23, 9.370238428477743e-24, 1.7634907986904327e-27, 0])
+    assert(np.all(np.isfinite(w)))
+    assert(np.all(np.abs(w - target) <= eps * np.max(target)))
