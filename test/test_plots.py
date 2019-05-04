@@ -19,11 +19,17 @@ if not os.path.isdir(_outdir):
 def _plot_production(process='All', pred=lambda ch: True, mS_max=5.25, res=800, prefix=''):
     m = Model()
     if process == 'All':
-        m.production.enable_all()
+        m.production.enable('K -> S pi')
+        m.production.enable('B -> S K?')
+    elif process == 'Quartic':
+        m.production.enable('K -> S S')
+        m.production.enable('B -> S S')
+        m.production.enable('B -> S S pi')
+        m.production.enable('B -> S S K?')
     else:
         m.production.enable(process)
     mS = np.linspace(0, mS_max, res)
-    result = m.compute_branching_ratios(mS, theta=1, alpha=0)
+    result = m.compute_branching_ratios(mS, theta=1, alpha=1)
     widths = result.production.width
     brs = result.production.branching_ratios
     # Plot decay widths of heavy hadrons to the Scalar
@@ -33,7 +39,7 @@ def _plot_production(process='All', pred=lambda ch: True, mS_max=5.25, res=800, 
             continue
         axw.plot(mS, w, label=ch)
     axw.set_xlabel(r'$m_S\;[\mathrm{GeV}]$')
-    axw.set_ylabel(r'$\Gamma / \theta^2\;[\mathrm{GeV}]$')
+    axw.set_ylabel(r'$\Gamma / C^2\;[\mathrm{GeV}]$')
     axw.set_yscale('log')
     axw.grid(color='grey', linestyle=':')
     box = axw.get_position()
@@ -49,7 +55,7 @@ def _plot_production(process='All', pred=lambda ch: True, mS_max=5.25, res=800, 
             continue
         axbr.plot(mS, br, label=ch)
     axbr.set_xlabel(r'$m_S\;[\mathrm{GeV}]$')
-    axbr.set_ylabel(r'$\mathrm{Br} / \theta^2$')
+    axbr.set_ylabel(r'$\mathrm{Br} / C^2$')
     axbr.set_yscale('log')
     axbr.grid(color='grey', linestyle=':')
     box = axbr.get_position()
@@ -64,6 +70,9 @@ def test_charged_production_plot():
 
 def test_neutral_production_plot():
     _plot_production('All', lambda ch: ch[-1] == '0', prefix='neutral_')
+
+def test_quartic_production_plot():
+    _plot_production('Quartic', lambda ch: ch[-1] == '0' or ch[-1] == 'S', prefix='quartic_', mS_max=2.7, res=100)
 
 def test_decay_plot(res=800):
     threshold = 2.0 # GeV
