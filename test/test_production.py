@@ -69,13 +69,13 @@ def test_two_body_hadronic_width():
     # B -> S K*_0(700)
     mS = np.array([0., 1., 2., 4.])
     target = np.array([
-        3.447337991078414e-13, 3.447915392282109e-13, 3.3230731555016296e-13,
-        7.006189718021021e-14])
+        3.552507496745926e-13, 3.5531025129903633e-13, 3.424451657396583e-13,
+        7.21993072953889e-14])
     w = hh.normalized_decay_width('B', 'K*_0(700)' , mS)
     assert(np.all(np.abs(w - target) <= epsilon * target))
     # B -> S K*_0(1430)
     target = np.array([
-        4.0404520553792716e-14, 4.930887800512882e-14, 9.408010032682152e-14, 0])
+        3.8607701226967446e-14, 4.711607522540698e-14, 8.989628771823396e-14, 0])
     w = hh.normalized_decay_width('B', 'K*_0(1430)', mS)
     assert(np.all(np.abs(w - target) <= epsilon * target))
     # B -> S K*
@@ -190,11 +190,11 @@ def test_three_body_quartic_width():
     assert(np.all(np.abs(w - target) <= eps * np.max(target)))
     w = q3.normalized_decay_width('B', 'K*_0(700)', [0, 1, 2.2, 2.3], eps=eps)
     target = np.array([
-        5.330370207723244e-23, 2.4172172189154465e-23, 3.82287725947574e-27, 0])
+        5.492986232383979e-23, 2.4909603623676532e-23, 3.9395035121516126e-27, 0])
     assert(np.all(np.isfinite(w)))
     assert(np.all(np.abs(w - target) <= eps * np.max(target)))
     w = q3.normalized_decay_width('B', 'K*_0(1430)', [0, 1, 1.9, 2], eps=eps)
     target = np.array([
-        1.7385144471025448e-23, 9.370238428477743e-24, 1.7634907986904327e-27, 0])
+        1.6612014059946842e-23, 8.953536899181432e-24, 1.685067040498652e-27, 0])
     assert(np.all(np.isfinite(w)))
     assert(np.all(np.abs(w - target) <= eps * np.max(target)))

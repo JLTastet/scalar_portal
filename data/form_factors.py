@@ -42,9 +42,9 @@ def _scalar_f0_form_factor(F0, a, b, mS):
     return lambda q2: fplus(q2) * (1 - q2 / (mB**2 - mS**2))
 
 _form_factors[('B', 'K*_0(700)' )] = \
-    _scalar_f0_form_factor(0.46, 1.6, 1.35, get_mass('K*_0(700)' ))
+    _scalar_f0_form_factor(0.466964, 1.6, 1.35, get_mass('K*_0(700)' ))
 _form_factors[('B', 'K*_0(1430)')] = \
-    _scalar_f0_form_factor(0.17, 4.4, 6.4 , get_mass('K*_0(1430)'))
+    _scalar_f0_form_factor(0.166177, 4.4, 6.4 , get_mass('K*_0(1430)'))
 
 # Vector form factors (section C.2.1)
 # -----------------------------------
