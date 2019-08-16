@@ -33,7 +33,7 @@ def _make_channels_and_groups():
             'S -> s sbar',
             'S -> c cbar',
         ],
-        'HardQCD': [
+        'pQCD': [
             'S -> s sbar',
             'S -> c cbar',
             'S -> g g'   ,
@@ -61,7 +61,7 @@ def test_enable_disable():
     ps.disable('S -> s sbar') # If the process is not enabled, do nothing.
     assert_equals(set(ps.list_enabled()), set(['S -> e+ e-', 'S -> mu+ mu-']))
     ps.disable_all()
-    ps.enable('HardQCD')
+    ps.enable('pQCD')
     ps.disable('S -> q qbar')
     assert_equals(set(ps.list_enabled()), set(['S -> g g']))
     ps.enable_all()
@@ -70,7 +70,7 @@ def test_enable_disable():
 
 def test_recursion():
     channels, groups = _make_channels_and_groups()
-    groups['AllQCD'] = ['S -> pi pi', 'HardQCD']
+    groups['AllQCD'] = ['S -> pi pi', 'pQCD']
     ps = ActiveProcesses(channels, groups)
     ps.enable('AllQCD')
     assert_equals(set(ps.list_enabled()), set([
@@ -88,7 +88,7 @@ def test_get_active_processes():
     lst = ps.get_active_processes()
     assert_equals(len(lst), 1)
     assert(isinstance(lst[0], Leptonic))
-    ps.enable('HardQCD')
+    ps.enable('pQCD')
     lst = ps.get_active_processes()
     assert_equals(len(lst), 4)
     assert_equals(sum(isinstance(el, Leptonic ) for el in lst), 1)

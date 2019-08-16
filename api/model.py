@@ -206,12 +206,12 @@ _decay_groups = {
     # Decays to heavy quarks
     'S -> q qbar': ['S -> s sbar' , 'S -> c cbar' ],
     # All hard QCD processes, which subsequently shower and hadronize
-    'HardQCD'    : ['S -> g g'    , 'S -> q qbar' ],
+    'pQCD'       : ['S -> g g'    , 'S -> q qbar' ],
     # All valid and relevant processes below 2 GeV
     'LightScalar': ['S -> e+ e-'  , 'S -> mu+ mu-' , 'S -> pi pi', 'S -> K K',
                     'S -> mesons...'],
     # All valid and relevant processes above 2 GeV
-    'HeavyScalar': ['S -> l+ l-'  , 'HardQCD'     ],
+    'HeavyScalar': ['S -> l+ l-'  , 'pQCD'        ],
 }
 
 
