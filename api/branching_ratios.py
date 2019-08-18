@@ -44,7 +44,7 @@ class BranchingRatios(with_metaclass(abc.ABCMeta, object)):
             bc = np.broadcast(self._mS, *self._couplings.values())
         except ValueError:
             raise(ValueError('Mass and coupling arrays could not be broadcast together.'))
-        self._ndim = bc.ndim
+        self._ndim = bc.nd
         self._scalar_id = scalar_id
         self._width = OrderedDict((str(ch), ch.width(mass, self._couplings)) for ch in channels)
         if ignore_invalid:
