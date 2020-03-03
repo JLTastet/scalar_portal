@@ -46,14 +46,14 @@ class BranchingRatios(with_metaclass(abc.ABCMeta, object)):
             raise(ValueError('Mass and coupling arrays could not be broadcast together.'))
         self._ndim = bc.nd
         self._scalar_id = scalar_id
-        self._width = OrderedDict((str(ch), ch.width(mass, self._couplings)) for ch in channels)
+        self._widths = OrderedDict((str(ch), ch.width(mass, self._couplings)) for ch in channels)
         if ignore_invalid:
-            for w in self._width.values():
+            for w in self._widths.values():
                 w[np.isnan(w)] = 0
 
     @property
-    def width(self):
-        return self._width
+    def widths(self):
+        return self._widths
 
     @property
     @abc.abstractmethod
@@ -77,10 +77,10 @@ class DecayBranchingRatios(BranchingRatios):
     '''
     def __init__(self, *args, **kwargs):
         super(DecayBranchingRatios, self).__init__(*args, **kwargs)
-        self._total_width = sum(self._width.values())
+        self._total_width = sum(self.widths.values())
         with np.errstate(invalid='ignore'):
             self._br = OrderedDict(
-                (ch_str, w / self._total_width) for ch_str, w in viewitems(self._width))
+                (ch_str, w / self._total_width) for ch_str, w in viewitems(self.widths))
 
     @property
     def total_width(self):
@@ -115,7 +115,7 @@ class ProductionBranchingRatios(BranchingRatios):
     def __init__(self, *args, **kwargs):
         super(ProductionBranchingRatios, self).__init__(*args, **kwargs)
         self._br = OrderedDict(
-            (st, w / self._channels[st].parent_width) for st, w in viewitems(self._width))
+            (st, w / self._channels[st].parent_width) for st, w in viewitems(self.widths))
 
     @property
     def branching_ratios(self):
@@ -139,7 +139,7 @@ class BranchingRatiosResult(object):
         return self._prod
 
     @property
-    def decays(self):
+    def decay(self):
         return self._decay
 
     @property
@@ -156,7 +156,7 @@ class BranchingRatiosResult(object):
     def pythia_full_string(self):
         particle_str = self.pythia_particle_string()
         production_strs = self.production.pythia_strings()
-        decay_strs = self.decays.pythia_strings()
+        decay_strs = self.decay.pythia_strings()
         full_string = '\n'.join(
             [particle_str] +
             list(st for st in production_strs.values() if st is not None) +

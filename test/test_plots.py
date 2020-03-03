@@ -30,7 +30,7 @@ def _plot_production(process='All', pred=lambda ch: True, mS_max=5.25, res=800, 
         m.production.enable(process)
     mS = np.linspace(0, mS_max, res)
     result = m.compute_branching_ratios(mS, theta=1, alpha=1)
-    widths = result.production.width
+    widths = result.production.widths
     brs = result.production.branching_ratios
     # Plot decay widths of heavy hadrons to the Scalar
     figw, axw = plt.subplots(figsize=(15,8))
@@ -77,17 +77,17 @@ def test_quartic_production_plot():
 def test_decay_plot(res=800):
     threshold = 2.0 # GeV
     m_low = Model()
-    m_low.decays.enable('LightScalar')
+    m_low.decay.enable('LightScalar')
     m_high = Model()
-    m_high.decays.enable('HeavyScalar')
+    m_high.decay.enable('HeavyScalar')
     mS_low = np.linspace(0, threshold, res)
     mS_high = np.linspace(threshold, 5, res)
     res_low = m_low.compute_branching_ratios(mS_low, theta=1)
     res_high = m_high.compute_branching_ratios(mS_high, theta=1)
-    widths_low = res_low.decays.width
-    widths_high = res_high.decays.width
-    brs_low = res_low.decays.branching_ratios
-    brs_high = res_high.decays.branching_ratios
+    widths_low = res_low.decay.widths
+    widths_high = res_high.decay.widths
+    brs_low = res_low.decay.branching_ratios
+    brs_high = res_high.decay.branching_ratios
     # Plot decay widths of the Scalar
     figw, axw = plt.subplots(figsize=(15,8))
     axw.plot(mS_low, res_low.total_width, label='Total', color='k', linewidth=2)

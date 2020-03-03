@@ -232,7 +232,7 @@ class Model(object):
     '''
     def __init__(self, scalar_id=default_scalar_id):
         self._production = ActiveProcesses(_production_channels, _production_groups)
-        self._decays = ActiveProcesses(_decay_channels, _decay_groups)
+        self._decay = ActiveProcesses(_decay_channels, _decay_groups)
         self._scalar_id = scalar_id
 
     @property
@@ -241,9 +241,9 @@ class Model(object):
         return self._production
 
     @property
-    def decays(self):
+    def decay(self):
         'Decay channels for the scalar.'
-        return self._decays
+        return self._decay
 
     @property
     def scalar_pdg_id(self):
@@ -258,8 +258,8 @@ class Model(object):
         '''
         if couplings is None:
             couplings = kwargs
-        prod_channels  = self._production.get_active_processes()
-        decay_channels = self._decays.get_active_processes()
+        prod_channels  = self.production.get_active_processes()
+        decay_channels = self.decay.get_active_processes()
         prod_br  = ProductionBranchingRatios(
             prod_channels , mass, couplings, ignore_invalid, scalar_id=self._scalar_id)
         decay_br = DecayBranchingRatios(

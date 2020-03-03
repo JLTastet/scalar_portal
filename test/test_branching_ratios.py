@@ -20,7 +20,7 @@ def test_decay_branching_ratios():
     epsilon = 1e-14
     assert(np.all(np.abs(br.total_width - ref_total_width) <= epsilon * ref_total_width))
     for ch in ref_widths.keys():
-        assert(np.all(np.abs(br.width[ch] - ref_widths[ch]) <= epsilon * ref_widths[ch]))
+        assert(np.all(np.abs(br.widths[ch] - ref_widths[ch]) <= epsilon * ref_widths[ch]))
         assert(np.all(np.abs(ref_total_width*br.branching_ratios[ch] - ref_widths[ch])
                       <= epsilon * ref_widths[ch]))
     assert_raises(ValueError, lambda: br.pythia_strings())
@@ -75,7 +75,7 @@ def test_branching_ratio_result():
     assert(np.all(res.total_width == decay_br.total_width))
     assert(np.all(res.lifetime_si == decay_br.lifetime_si))
     assert(res.production is production_br)
-    assert(res.decays     is decay_br     )
+    assert(res.decay      is decay_br     )
 
 def test_result_strings():
     production_channels = [TwoBodyHadronic('B+', 'pi+'), TwoBodyHadronic('B+', 'K*_2(1430)+')]
