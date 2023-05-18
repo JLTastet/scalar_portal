@@ -16,6 +16,7 @@ from ..decay.two_kaons import TwoKaons
 from ..decay.multimeson import Multimeson
 from ..decay.two_gluons import TwoGluons
 from ..decay.two_quarks import TwoQuarks
+from ..decay.two_heavy_hadrons import TwoHeavyHadrons
 
 
 # All supported production channels
@@ -194,6 +195,12 @@ _decay_channels = [
     TwoGluons(),         # S -> g g
     TwoQuarks('s'),      # S -> s sbar
     TwoQuarks('c'),      # S -> c cbar
+    # TwoHeavyHadrons('c', 'D+'  , 'D-'   , 0.232), # S -> D+ D-
+    # TwoHeavyHadrons('c', 'D0'  , 'Dbar0', 0.549), # S -> D0 Dbar0
+    TwoHeavyHadrons('c', 'D+'  , 'D-'   , 0.232 / (0.232 + 0.549)), # S -> D+ D-
+    TwoHeavyHadrons('c', 'D0'  , 'Dbar0', 0.549 / (0.232 + 0.549)), # S -> D0 Dbar0
+    # TwoHeavyHadrons('c', 'D_s+', 'D_s-' , 0.101), # S -> D_s+ D_s-
+    # TwoHeavyHadrons('c', 'Lambda_c+', 'Lambda_cbar-' , 0.118), # S -> Λ_c+ Λ_c-
 ]
 
 _decay_groups = {
@@ -212,6 +219,12 @@ _decay_groups = {
                     'S -> mesons...'],
     # All valid and relevant processes above 2 GeV
     'HeavyScalar': ['S -> l+ l-'  , 'pQCD'        ],
+    # Decays to charmed hadrons
+    # 'CharmedHadrons': ['S -> D+ D-', 'S -> D0 Dbar0', 'S -> D_s+ D_s-', 'S -> Lambda_c+ Lambda_cbar-'],
+    'LightCharmedHadrons': ['S -> D+ D-', 'S -> D0 Dbar0'],
+    # Decays to charmed hadrons and to leptons
+    # 'HeavyScalar_CharmedHadrons': ['S -> l+ l-', 'S -> s sbar', 'S -> g g', 'CharmedHadrons'],
+    'HeavyScalar_LightCharmedHadrons': ['S -> l+ l-', 'S -> s sbar', 'S -> g g', 'LightCharmedHadrons'],
 }
 
 
