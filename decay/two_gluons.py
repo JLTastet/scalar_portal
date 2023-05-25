@@ -41,33 +41,45 @@ def _F_q(q, mS):
 def _F(mS):
     return sum(_F_q(q, mS) for q in _heavy_quarks)
 
+def _E(mS, mu, Nf):
+    '''
+    NLO correction from gluon real emission and splitting.
+    Cf. Eq. (23) from hep-ph/9504378 (Spira et al.)
+    ΔE is neglected (it vanishes in the limit of large loop masses).
+    '''
+    return 95/4 - 7/6*Nf + (33-2*Nf)/6 * 2*np.log(mu/mS) # + ΔE ≈ 0
+
 _lower_validity_bound = 2.0 # GeV
+_upper_validity_bound = get_mass('B') # The b quark becomes dynamical above this threshold
 
 def normalized_decay_width(mS):
     """
-    Computes the decay width into gluons: S -> g g.
+    Computes the decay width into gluons at NLO: S -> gg(g), gqq̄.
 
     This computation is only valid above 2 GeV, and will return NaNs below.
 
-    Note:
+    Notes:
     The intrinsic uncertainty on the charm pole mass introduces a relative
     uncertainty corresponding to a factor of about 2 between the lowest and
     highest possible decay widths.
 
-    Since this calculation is done at 1-loop order, we have used the 1-loop
+    Since this calculation is done at next-to-leading order, we have used the 1-loop
     formula to obtain the on-shell masses of c and b from the MSbar masses.
+
+    The 1-loop contribution from the top quark is only 0.3% and is therefore neglected.
     """
     mS = np.asarray(mS, dtype='float')
-    valid = mS >= _lower_validity_bound
+    valid = (mS >= _lower_validity_bound) & (mS < _upper_validity_bound)
     F = _F(mS[valid])
     w = np.zeros_like(mS, dtype='float')
     w[~valid] = float('nan')
     if np.any(valid):
         aS = alpha_s(mu=mS[valid], nf=_nf)
-        # We have to use the top pole mass for the 2-loop radiative corrections.
-        mt = on_shell_mass('t')
+        # Compute the NLO correction from the real emissions and splitting of gluons.
+        E = _E(mS[valid], mS[valid], _nf)
+        # Evaluate the width
         w[valid] = np.real(F*np.conj(F)) * (aS/(4*pi))**2 \
-            * (mS[valid]**3/(8*pi*v**2)) * (1 + mt**2/(16*v**2*pi**2))
+            * (mS[valid]**3/(8*pi*v**2)) * (1 + (aS/pi)*E)
     return w
 
 def normalized_total_width(mS):
