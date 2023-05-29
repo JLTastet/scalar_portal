@@ -8,6 +8,7 @@ import numpy as np
 import scipy.interpolate as si
 
 from ..api.channel import DecayChannel
+from ..decay.two_heavy_hadrons import TwoHeavyHadrons
 
 
 _srcdir = os.path.dirname(__file__)
@@ -60,6 +61,13 @@ class TwoKaons(DecayChannel):
         else:
             raise(ValueError("Final state must be either 'neutral' (K0 Kbar0) or 'charged' (K+ K-)."))
         super(TwoKaons, self).__init__(children)
+        # Above 2 GeV, assume that all strange quarks fragment to kaons
+        # This leads to a discontinuity in the "strange" width of about 30%, unless
+        # the multi-meson channel contains decay modes involving strange mesons.
+        self._heavy = TwoHeavyHadrons('s', *children, 1/2)
 
     def normalized_width(self, mS):
-        return normalized_decay_width(mS)
+        mS = np.asarray(mS)
+        light_width = normalized_decay_width(mS)
+        heavy_width = self._heavy.normalized_width(mS)
+        return np.where(mS < _upper_lim, light_width, heavy_width)

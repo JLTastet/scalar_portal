@@ -210,6 +210,8 @@ _decay_groups = {
     'S -> pi pi' : ['S -> pi0 pi0', 'S -> pi+ pi-'],
     # Decays to kaons
     'S -> K K'   : ['S -> K0 Kbar0', 'S -> K+ K-' ],
+    # Decays to D mesons
+    'S -> D D'   : ['S -> D0 Dbar0', 'S -> D+ D-' ],
     # Decays to heavy quarks
     'S -> q qbar': ['S -> s sbar' , 'S -> c cbar' ],
     # All hard QCD processes, which subsequently shower and hadronize
@@ -219,12 +221,10 @@ _decay_groups = {
                     'S -> mesons...'],
     # All valid and relevant processes above 2 GeV
     'HeavyScalar': ['S -> l+ l-'  , 'pQCD'        ],
-    # Decays to charmed hadrons
-    # 'CharmedHadrons': ['S -> D+ D-', 'S -> D0 Dbar0', 'S -> D_s+ D_s-', 'S -> Lambda_c+ Lambda_cbar-'],
-    'LightCharmedHadrons': ['S -> D+ D-', 'S -> D0 Dbar0'],
-    # Decays to charmed hadrons and to leptons
-    # 'HeavyScalar_CharmedHadrons': ['S -> l+ l-', 'S -> s sbar', 'S -> g g', 'CharmedHadrons'],
-    'HeavyScalar_LightCharmedHadrons': ['S -> l+ l-', 'S -> s sbar', 'S -> g g', 'LightCharmedHadrons'],
+    # Decays to heavy mesons
+    'HeavyMesons': ['S -> K K'    , 'S -> D D'    ],
+    # Decays to hadrons and to leptons
+    'HeavyScalar_Mesons': ['S -> l+ l-', 'S -> g g', 'HeavyMesons'],
 }
 
 
